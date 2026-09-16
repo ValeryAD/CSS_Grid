@@ -1,0 +1,404 @@
+/* ============================================================
+   CSS Grid — обучающий курс. Общие стили
+   Переиспользуются на всех страницах курса.
+   ============================================================ */
+
+:root {
+  --bg: #0f172a;
+  --surface: #1e293b;
+  --surface-2: #273449;
+  --text: #e2e8f0;
+  --muted: #94a3b8;
+  --accent: #38bdf8;
+  --accent-soft: rgba(56, 189, 248, 0.15);
+  --green: #4ade80;
+  --radius: 12px;
+  font-size: 16px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.65;
+}
+
+.page {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 4rem;
+}
+
+/* ---------- Навигация ---------- */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 2rem;
+}
+
+.nav a {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.9rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 8px;
+  border: 1px solid var(--surface-2);
+  transition: all 0.15s ease;
+}
+
+.nav a:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+/* ---------- Заголовки и текст ---------- */
+header {
+  margin-bottom: 2.5rem;
+}
+
+header h1 {
+  font-size: 2.2rem;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--accent), var(--green));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 0.5rem;
+}
+
+header p { color: var(--muted); }
+
+h2 {
+  font-size: 1.45rem;
+  margin: 2.5rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+h2 .num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+p { margin-bottom: 1rem; }
+
+ul { margin: 0 0 1rem 1.4rem; color: var(--text); }
+li { margin-bottom: 0.35rem; }
+li::marker { color: var(--accent); }
+
+/* ---------- Карточки ---------- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.note {
+  border-left: 3px solid var(--green);
+  background: rgba(74, 222, 128, 0.08);
+  padding: 0.8rem 1rem;
+  border-radius: 0 8px 8px 0;
+  font-size: 0.92rem;
+  margin: 1rem 0 1.5rem;
+}
+
+/* ---------- Код ---------- */
+code {
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 0.88em;
+  background: var(--surface-2);
+  padding: 0.15em 0.4em;
+  border-radius: 5px;
+  color: var(--accent);
+}
+
+pre {
+  background: #0b1120;
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: #c9d6ea;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+/* подсветка синтаксиса */
+.tok-prop { color: #7dd3fc; }
+.tok-val  { color: #86efac; }
+.tok-sel  { color: #f9a8d4; }
+.tok-com  { color: #64748b; font-style: italic; }
+
+/* ---------- Демо-сетки ---------- */
+.demo-grid {
+  display: grid;
+  gap: 12px;
+  margin-top: 1rem;
+}
+
+.demo-grid > div {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--accent);
+  transition: all 0.3s ease;
+}
+
+/* ---------- Таблицы ---------- */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1.5rem;
+  font-size: 0.92rem;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.65rem 0.8rem;
+  border-bottom: 1px solid var(--surface-2);
+  vertical-align: top;
+}
+
+th {
+  color: var(--muted);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+td code { white-space: nowrap; }
+
+/* ---------- Плейграунд ---------- */
+.playground {
+  background: var(--surface);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+}
+
+.playground .controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.playground button {
+  font-family: inherit;
+  font-size: 0.85rem;
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.playground button:hover { border-color: var(--accent); }
+
+.playground button.active {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.playground .current-value {
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 0.85rem;
+  background: #0b1120;
+  border: 1px solid var(--surface-2);
+  border-radius: 8px;
+  padding: 0.5rem 0.8rem;
+  margin-bottom: 1rem;
+  color: var(--green);
+}
+
+.playground .live {
+  display: grid;
+  gap: 10px;
+  transition: all 0.3s ease;
+}
+
+.playground .live > div {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  min-height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--accent);
+  transition: all 0.3s ease;
+}
+
+/* ---------- Формирование демо-сетки в уроке 1 ---------- */
+.demo-grid.cols-3 { grid-template-columns: repeat(3, 1fr); }
+
+/* ---------- Демо строк (урок 2) ---------- */
+.demo-grid.rows-2 {
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: 72px 110px;
+}
+
+/* ---------- Демо именованных областей (урок 2) ---------- */
+.area-grid {
+  display: grid;
+  gap: 10px;
+  margin-top: 1rem;
+  min-height: 280px;
+}
+
+.area-box {
+  border-radius: 8px;
+  padding: 0.7rem 0.9rem;
+  font-weight: 600;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.15rem;
+  transition: all 0.3s ease;
+}
+
+.area-box small {
+  font-weight: 400;
+  font-size: 0.75rem;
+  opacity: 0.75;
+  font-family: "Cascadia Code", Consolas, monospace;
+}
+
+.area-box[data-area="header"]  { grid-area: header;  background: rgba(56, 189, 248, 0.12); border: 1px solid #38bdf8; color: #7dd3fc; }
+.area-box[data-area="sidebar"] { grid-area: sidebar; background: rgba(74, 222, 128, 0.10); border: 1px solid #4ade80; color: #86efac; }
+.area-box[data-area="content"] { grid-area: content; background: var(--accent-soft);      border: 1px solid var(--accent); color: var(--accent); }
+.area-box[data-area="footer"]  { grid-area: footer;  background: rgba(192, 132, 252, 0.12); border: 1px solid #c084fc; color: #d8b4fe; }
+
+/* ---------- Оглавление (главная страница) ---------- */
+.toc {
+  list-style: none;
+  margin: 0;
+  display: grid;
+  gap: 0.9rem;
+}
+
+.toc-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  border-radius: var(--radius);
+  transition: all 0.15s ease;
+}
+
+.toc-item a {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex: 1;
+  text-decoration: none;
+  color: inherit;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+  font-size: 1rem;
+}
+
+.toc-item.available {
+  background: var(--surface);
+  border: 1px solid var(--surface-2);
+}
+
+.toc-item.available a:hover {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+}
+
+.toc-item.soon {
+  background: var(--surface);
+  border: 1px dashed var(--surface-2);
+  opacity: 0.6;
+}
+
+.toc-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.toc-item.soon .toc-num {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+.toc-text { flex: 1; }
+
+.toc-title { font-weight: 600; display: block; margin-bottom: 0.1rem; }
+
+.toc-desc {
+  font-size: 0.85rem;
+  color: var(--muted);
+  display: block;
+}
+
+.toc-badge {
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.3rem 0.7rem;
+  border-radius: 999px;
+  flex-shrink: 0;
+}
+
+.toc-badge.done {
+  background: rgba(74, 222, 128, 0.12);
+  color: var(--green);
+}
+
+.toc-badge.waiting {
+  background: var(--surface-2);
+  color: var(--muted);
+}
+
+/* ---------- Подвал ---------- */
+footer {
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--surface-2);
+  color: var(--muted);
+  font-size: 0.85rem;
+}

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 1: CSS Grid — основы и grid-template-columns</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a href="index.html">← К оглавлению</a>
+    </nav>
+
+    <header>
+      <h1>CSS Grid — основы</h1>
+      <p>Урок 1: что такое Grid, первый пример и свойство <code>grid-template-columns</code></p>
+    </header>
+
+    <!-- ============ 1. Что такое CSS Grid ============ -->
+    <section>
+      <h2><span class="num">1</span>Что такое CSS Grid?</h2>
+      <p>
+        <strong>CSS Grid</strong> — система раскладки, позволяющая организовать элементы страницы
+        по <em>двум измерениям</em> одновременно: по строкам и по столбцам.
+        В отличие от Flexbox, который работает в одном измерении (ряд или колонка),
+        Grid создаёт полноценную двухмерную сетку.
+      </p>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Ключевые преимущества:</strong></p>
+        <ul>
+          <li>Двумерная раскладка — строки и столбцы одновременно;</li>
+          <li>Размер ячеек определяется <em>сеткой</em>, а не содержимым (и наоборот, если нужно);</li>
+          <li>Возможность позиционировать элементы по линиям сетки и перекрывать их;</li>
+          <li>Код раскладки описывается в CSS и отделён от разметки;</li>
+          <li>Отлично сочетается с <code>media query</code> и адаптивным дизайном.</li>
+        </ul>
+      </div>
+      <div class="note">
+        💡 <strong>Совет:</strong> Grid и Flexbox не конкуренты, а дополняют друг друга.
+        Grid — для общей структуры страницы (макет), Flexbox — для мелких компонентов внутри ячеек (навигация, карточки).
+      </div>
+    </section>
+
+    <!-- ============ 2. Первый пример ============ -->
+    <section>
+      <h2><span class="num">2</span>Первый пример: три колонки</h2>
+      <p>
+        Чтобы создать сетку, нужно сделать два шага:
+        назначить контейнеру <code>display: grid</code> и описать колонки через
+        <code>grid-template-columns</code>.
+      </p>
+      <pre><code><span class="tok-com">/* HTML */</span>
+&lt;div <span class="tok-sel">class</span>=<span class="tok-val">"grid"</span>&gt;
+  &lt;div&gt;1&lt;/div&gt;
+  &lt;div&gt;2&lt;/div&gt;
+  &lt;div&gt;3&lt;/div&gt;
+  &lt;div&gt;4&lt;/div&gt;
+  &lt;div&gt;5&lt;/div&gt;
+  &lt;div&gt;6&lt;/div&gt;
+&lt;/div&gt;
+
+<span class="tok-com">/* CSS */</span>
+<span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">100px 100px 100px</span>; <span class="tok-com">/* три колонки по 100px */</span>
+  <span class="tok-prop">gap</span>: <span class="tok-val">12px</span>; <span class="tok-com">/* расстояние между ячейками */</span>
+}</code></pre>
+      <div class="demo-grid cols-3" id="basic-demo">
+        <div>1</div><div>2</div><div>3</div>
+        <div>4</div><div>5</div><div>6</div>
+      </div>
+      <p>
+        Элементы расставляются в сетку слева направо, сверху вниз:
+        сначала заполняется первая строка, затем вторая.
+        Если элементов больше, чем помещается в одну строку,
+        строка создаётся автоматически.
+      </p>
+      <div class="note">
+        💡 Свойство <code>gap</code> задаёт расстояние между строками и столбцами —
+        это современный аналог устаревшего <code>grid-gap</code>.
+      </div>
+    </section>
+
+    <!-- ============ 3. grid-template-columns ============ -->
+    <section>
+      <h2><span class="num">3</span>Свойство grid-template-columns</h2>
+      <p>
+        <code>grid-template-columns</code> определяет, <strong>сколько</strong> будет колонок
+        и <strong>какая у каждой ширина</strong>. Каждое значение в списке — это одна колонка,
+        значения разделяются пробелом:
+      </p>
+      <pre><code><span class="tok-prop">grid-template-columns</span>: <span class="tok-val">col1 col2 col3 ...</span>;</code></pre>
+      <p>В качестве ширины колонки допустимы разные типы значений:</p>
+
+      <div class="card" style="padding:0;">
+        <table>
+          <thead>
+            <tr><th>Значение</th><th>Пример</th><th>Что означает</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Абсолютные единицы</strong></td>
+              <td><code>200px</code>, <code>12em</code>, <code>2rem</code></td>
+              <td>Фиксированная ширина колонки</td>
+            </tr>
+            <tr>
+              <td><strong>Проценты</strong></td>
+              <td><code>50%</code>, <code>33.3%</code></td>
+              <td>Доля от ширины контейнера</td>
+            </tr>
+            <tr>
+              <td><strong>Дроби — <code>fr</code></strong></td>
+              <td><code>1fr</code>, <code>1fr 2fr</code></td>
+              <td>Доля <em>свободного</em> места. <code>1fr 2fr</code> — вторая колонка вдвое шире первой</td>
+            </tr>
+            <tr>
+              <td><strong>Ключевое слово</strong></td>
+              <td><code>auto</code></td>
+              <td>Ширина по содержимому ячейки</td>
+            </tr>
+            <tr>
+              <td><strong>Функция</strong></td>
+              <td><code>repeat(3, 1fr)</code></td>
+              <td>Повторяет шаблон: 3 равные колонки по <code>1fr</code></td>
+            </tr>
+            <tr>
+              <td><strong>Функция</strong></td>
+              <td><code>minmax(100px, 1fr)</code></td>
+              <td>Ширина не меньше 100px и не больше <code>1fr</code></td>
+            </tr>
+            <tr>
+              <td><strong>Адаптивные</strong></td>
+              <td><code>repeat(auto-fit, minmax(150px, 1fr))</code></td>
+              <td>Сколько влезет колонок шириной от 150px — ровно столько и создаётся</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p><strong>Типичные комбинации:</strong></p>
+      <pre><code><span class="tok-com">/* 3 равные колонки */</span>
+<span class="tok-prop">grid-template-columns</span>: <span class="tok-val">1fr 1fr 1fr</span>;
+<span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>; <span class="tok-com">/* то же самое, короче */</span>
+
+<span class="tok-com">/* боковые колонки фиксированные, средняя — растягивается */</span>
+<span class="tok-prop">grid-template-columns</span>: <span class="tok-val">200px 1fr 200px</span>;
+
+<span class="tok-com">/* колонки 1:2:1 — средняя вдвое шире крайних */</span>
+<span class="tok-prop">grid-template-columns</span>: <span class="tok-val">1fr 2fr 1fr</span>;
+
+<span class="tok-com">/* адаптивная сетка карточек: от 150px, сколько влезет */</span>
+<span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(auto-fit, minmax(150px, 1fr))</span>;</code></pre>
+
+      <div class="note">
+        💡 <strong>fr против %:</strong> <code>100%</code> — это всегда доля всего контейнера,
+        даже если соседние колонки «забирают» место. <code>1fr</code> — доля только
+        <em>свободного</em> места, оставшегося после распределения фиксированных колонок.
+      </div>
+    </section>
+
+    <!-- ============ 4. Плейграунд ============ -->
+    <section>
+      <h2><span class="num">4</span>Попробуйте: интерактивный пример</h2>
+      <p>Нажмите на кнопку — сетка перестроится с новым значением <code>grid-template-columns</code>:</p>
+
+      <div class="playground">
+        <div class="controls" id="pg-buttons">
+          <button data-value="repeat(3, 1fr)" class="active">repeat(3, 1fr)</button>
+          <button data-value="1fr 2fr 1fr">1fr 2fr 1fr</button>
+          <button data-value="200px 1fr 200px">200px 1fr 200px</button>
+          <button data-value="25% 50% 25%">25% 50% 25%</button>
+          <button data-value="100px 100px 100px">100px 100px 100px</button>
+          <button data-value="auto auto 1fr">auto auto 1fr</button>
+          <button data-value="repeat(auto-fit, minmax(80px, 1fr))">auto-fit + minmax</button>
+        </div>
+        <div class="current-value" id="pg-value">grid-template-columns: repeat(3, 1fr);</div>
+        <div class="live" id="pg-grid">
+          <div>1</div><div>2</div><div>3</div>
+          <div>4</div><div>5</div><div>6</div>
+        </div>
+      </div>
+    </section>
+
+    <footer>
+      Урок 1 из серии «Изучаем CSS Grid» ·
+      <a href="index.html" style="color:var(--accent);">← Вернуться к оглавлению</a>
+    </footer>
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('#pg-buttons button');
+    const grid = document.getElementById('pg-grid');
+    const valueLabel = document.getElementById('pg-value');
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const value = btn.dataset.value;
+        grid.style.gridTemplateColumns = value;
+        valueLabel.textContent = 'grid-template-columns: ' + value + ';';
+      });
+    });
+  </script>
+</body>
+</html>

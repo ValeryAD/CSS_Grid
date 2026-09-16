@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 2: Строки и области — grid-template-rows, grid-template-areas</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a href="index.html">← К оглавлению</a>
+      <a href="01-grid-basics.html">← Урок 1</a>
+    </nav>
+
+    <header>
+      <h1>Строки и области сетки</h1>
+      <p>Урок 2: <code>grid-template-rows</code>, именованные области <code>grid-template-areas</code> и сокращение <code>grid-template</code></p>
+    </header>
+
+    <!-- ============ 1. grid-template-rows ============ -->
+    <section>
+      <h2><span class="num">1</span>Свойство grid-template-rows</h2>
+      <p>
+        В уроке 1 мы описали только колонки, а строки создавались <em>автоматически</em>
+        по мере заполнения сетки. Но у Grid есть полная симметрия: свойство
+        <code>grid-template-rows</code> работает так же, как
+        <code>grid-template-columns</code>, — только для строк.
+      </p>
+      <p>Список значений задаёт высоту каждой строки в том же порядке — сверху вниз:</p>
+      <pre><code><span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;  <span class="tok-com">/* 3 колонки */</span>
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">72px 110px</span>;        <span class="tok-com">/* 1-я строка 72px, 2-я — 110px */</span>
+  <span class="tok-prop">gap</span>: <span class="tok-val">12px</span>;
+}</code></pre>
+      <div class="demo-grid rows-2">
+        <div>1</div><div>2</div><div>3</div>
+        <div>4</div><div>5</div><div>6</div>
+      </div>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Правила те же, что и для колонок:</strong></p>
+        <ul>
+          <li>Допустимы те же значения: <code>px</code>, <code>%</code>, <code>fr</code>, <code>auto</code>, <code>minmax()</code>, <code>repeat()</code>;</li>
+          <li>Если элементов больше, чем строк в шаблоне, лишние строки создаются <em>имплицитно</em> с высотой <code>auto</code> (по содержимому);</li>
+          <li>Очень часто строки вообще не описывают и дают им <code>auto</code> — тогда высота каждой строки определяется самым «высоким» элементом в ней.</li>
+        </ul>
+      </div>
+      <div class="note">
+        💡 <strong>fr в строках</strong> работает так же, как в колонках, только по вертикали:
+        <code>grid-template-rows: 1fr 2fr</code> — вторая строка вдвое выше первой.
+        Именно так делают «шапка — контент — подвал»: <code>auto 1fr auto</code>.
+      </div>
+    </section>
+
+    <!-- ============ 2. grid-template ============ -->
+    <section>
+      <h2><span class="num">2</span>Сокращение grid-template</h2>
+      <p>
+        Если нужны и строки, и колонки, их можно описать одним свойством
+        <code>grid-template</code> — сначала строки, затем колонки, разделитель — <code>/</code>:
+      </p>
+      <pre><code><span class="tok-com">/* раздельно */</span>
+<span class="tok-prop">grid-template-rows</span>: <span class="tok-val">64px 1fr 64px</span>;
+<span class="tok-prop">grid-template-columns</span>: <span class="tok-val">240px 1fr</span>;
+
+<span class="tok-com">/* то же самое, короче */</span>
+<span class="tok-prop">grid-template</span>: <span class="tok-val">64px 1fr 64px / 240px 1fr</span>;</code></pre>
+      <p>
+        Обратите внимание: порядок — <strong>строки / колонки</strong>.
+        Это легко запомнить: «сначала сверху-вниз, потом слева-направо».
+      </p>
+      <div class="note">
+        ⚠️ Важно: <code>grid-template</code> сбрасывает и <code>grid-template-rows</code>,
+        и <code>grid-template-columns</code>, поэтому не дублируйте их, если используете сокращение.
+      </div>
+    </section>
+
+    <!-- ============ 3. grid-template-areas ============ -->
+    <section>
+      <h2><span class="num">3</span>Именованные области: grid-template-areas</h2>
+      <p>
+        Самая удобная функция Grid — <strong>описывать макет «картинкой»</strong>.
+        Свойство <code>grid-template-areas</code> позволяет нарисовать сетку строками текста,
+        где каждое слово — имя области:
+      </p>
+      <pre><code><span class="tok-sel">.layout</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">240px 1fr</span>;
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">64px 1fr 64px</span>;
+  <span class="tok-prop">grid-template-areas</span>:
+    <span class="tok-val">"header header"</span>
+    <span class="tok-val">"sidebar content"</span>
+    <span class="tok-val">"footer footer"</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">10px</span>;
+}
+
+<span class="tok-com">/* каждый элемент привязывается к области одним свойством */</span>
+<span class="tok-sel">.header</span>  { <span class="tok-prop">grid-area</span>: <span class="tok-val">header</span>; }
+<span class="tok-sel">.sidebar</span> { <span class="tok-prop">grid-area</span>: <span class="tok-val">sidebar</span>; }
+<span class="tok-sel">.content</span> { <span class="tok-prop">grid-area</span>: <span class="tok-val">content</span>; }
+<span class="tok-sel">.footer</span>  { <span class="tok-prop">grid-area</span>: <span class="tok-val">footer</span>; }</code></pre>
+      <p>
+        Как это читается: каждая строка шаблона — одна строка сетки,
+        каждое слово — одна ячейка. Одно и то же имя, повторённое в строке,
+        <strong>растягивается</strong> на все эти ячейки (так <em>header</em> занимает обе колонки).
+      </p>
+      <div class="area-grid" style="
+        grid-template-columns: 240px 1fr;
+        grid-template-rows: 64px 1fr 64px;
+        grid-template-areas: 'header header' 'sidebar content' 'footer footer';
+      ">
+        <div class="area-box" data-area="header">Шапка <small>grid-area: header</small></div>
+        <div class="area-box" data-area="sidebar">Сайдбар <small>grid-area: sidebar</small></div>
+        <div class="area-box" data-area="content">Контент <small>grid-area: content</small></div>
+        <div class="area-box" data-area="footer">Подвал <small>grid-area: footer</small></div>
+      </div>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Особенности синтаксиса областей:</strong></p>
+        <ul>
+          <li>Порядок элементов в <strong>HTML не важен</strong> — место задаётся именем области;</li>
+          <li>Точка <code>.</code> — пустая ячейка: <code>"content ."</code>;</li>
+          <li>Область может занимать <em>несколько ячеек</em>, но только прямоугольником;</li>
+          <li>Имена — простые идентификаторы: <code>header</code>, <code>main</code>, <code>ad-top</code> (чертой можно);</li>
+          <li>Элемент с <code>grid-area</code>, которого нет в шаблоне, размещается автоматически — проверяйте опечатки!</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 4. Плейграунд ============ -->
+    <section>
+      <h2><span class="num">4</span>Попробуйте: перестройте макет без HTML</h2>
+      <p>
+        Главная сила именованных областей — <strong>перестановка блоков меняя только CSS</strong>.
+        HTML ниже один и тот же, меняется только <code>grid-template-areas</code> (и размеры):
+      </p>
+      <pre><code>&lt;div <span class="tok-sel">class</span>=<span class="tok-val">"layout"</span>&gt;
+  &lt;header <span class="tok-sel">class</span>=<span class="tok-val">"header"</span>&gt;Шапка&lt;/header&gt;
+  &lt;aside <span class="tok-sel">class</span>=<span class="tok-val">"sidebar"</span>&gt;Сайдбар&lt;/aside&gt;
+  &lt;main <span class="tok-sel">class</span>=<span class="tok-val">"content"</span>&gt;Контент&lt;/main&gt;
+  &lt;footer <span class="tok-sel">class</span>=<span class="tok-val">"footer"</span>&gt;Подвал&lt;/footer&gt;
+&lt;/div&gt;</code></pre>
+
+      <div class="playground">
+        <div class="controls" id="layout-buttons">
+          <button data-layout="classic" class="active">Классический</button>
+          <button data-layout="right">Сайдбар справа</button>
+          <button data-layout="stack">Одна колонка</button>
+          <button data-layout="magazine">Журнальный (с .)</button>
+        </div>
+        <div class="current-value" id="layout-value"></div>
+        <div class="area-grid" id="layout-demo">
+          <div class="area-box" data-area="header">Шапка <small>header</small></div>
+          <div class="area-box" data-area="sidebar">Сайдбар <small>sidebar</small></div>
+          <div class="area-box" data-area="content">Контент <small>content</small></div>
+          <div class="area-box" data-area="footer">Подвал <small>footer</small></div>
+        </div>
+      </div>
+      <div class="note">
+        💡 Обратите внимание: в «журнальном» макете точка <code>.</code> создаёт пустую ячейку —
+        сетка сохраняет форму 2×3, но одна ячейка свободна.
+        Именно так делают сложные редакционные макеты и дашборды.
+      </div>
+    </section>
+
+    <!-- ============ 5. Итоги ============ -->
+    <section>
+      <h2><span class="num">5</span>Итоги урока</h2>
+      <div class="card" style="padding:0;">
+        <table>
+          <thead>
+            <tr><th>Свойство</th><th>Где задаётся</th><th>Что делает</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>grid-template-rows</code></td>
+              <td>контейнер</td>
+              <td>Количество и высоты строк (значения — те же, что для колонок)</td>
+            </tr>
+            <tr>
+              <td><code>grid-template</code></td>
+              <td>контейнер</td>
+              <td>Сокращение: <code>строки / колонки</code>; сбрасывает оба свойства выше</td>
+            </tr>
+            <tr>
+              <td><code>grid-template-areas</code></td>
+              <td>контейнер</td>
+              <td>Макет «картинкой» из именованных областей</td>
+            </tr>
+            <tr>
+              <td><code>grid-area</code></td>
+              <td>элемент</td>
+              <td>Привязывает элемент к области из шаблона</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        ✅ <strong>Правило практики:</strong> для крупных макетов страницы используйте
+        <code>grid-template-areas</code> — код читается как схема, а перестройка
+        (сайдбар влево/вправо, мобильная одна колонка) делается одной строкой CSS
+        внутри <code>media query</code>.
+      </div>
+    </section>
+
+    <footer>
+      Урок 2 из серии «Изучаем CSS Grid» ·
+      <a href="index.html" style="color:var(--accent);">← К оглавлению</a> ·
+      <a href="01-grid-basics.html" style="color:var(--accent);">← Урок 1</a>
+    </footer>
+  </div>
+
+  <script>
+    const layouts = {
+      classic: {
+        cols:  '240px 1fr',
+        rows:  '64px 1fr 64px',
+        areas: '"header header" "sidebar content" "footer footer"'
+      },
+      right: {
+        cols:  '1fr 240px',
+        rows:  '64px 1fr 64px',
+        areas: '"header header" "content sidebar" "footer footer"'
+      },
+      stack: {
+        cols:  '1fr',
+        rows:  '64px auto 1fr 64px',
+        areas: '"header" "sidebar" "content" "footer"'
+      },
+      magazine: {
+        cols:  '2fr 1fr',
+        rows:  '64px 1fr 80px',
+        areas: '"header header" "content ." "sidebar footer"'
+      }
+    };
+
+    const buttons = document.querySelectorAll('#layout-buttons button');
+    const demo = document.getElementById('layout-demo');
+    const valueLabel = document.getElementById('layout-value');
+    valueLabel.style.whiteSpace = 'pre';
+
+    function applyLayout(key) {
+      const l = layouts[key];
+      demo.style.gridTemplateColumns = l.cols;
+      demo.style.gridTemplateRows = l.rows;
+      demo.style.gridTemplateAreas = l.areas;
+      valueLabel.textContent =
+        'grid-template-columns: ' + l.cols + ';\n' +
+        'grid-template-rows: ' + l.rows + ';\n' +
+        'grid-template-areas:\n  ' + l.areas.replace(/" /g, '"\n  ');
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        buttons.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applyLayout(btn.dataset.layout);
+      });
+    });
+
+    applyLayout('classic');
+  </script>
+</body>
+</html>
