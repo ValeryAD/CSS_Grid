@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 3: Линии сетки и позиционирование элементов</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a href="index.html">← К оглавлению</a>
+      <a href="01-grid-basics.html">← Урок 1</a>
+      <a href="02-grid-rows-areas.html">← Урок 2</a>
+    </nav>
+
+    <header>
+      <h1>Линии сетки и позиционирование</h1>
+      <p>Урок 3: как устроены линии Grid, <code>grid-column</code> / <code>grid-row</code>, <code>span</code>, отрицательные номера и именованные линии</p>
+    </header>
+
+    <!-- ============ 1. Линии сетки ============ -->
+    <section>
+      <h2><span class="num">1</span>Из чего состоит сетка: линии и ячейки</h2>
+      <p>
+        Ключевое понятие Grid — <strong>линия (grid line)</strong>. Сетку образуют линии
+        колонок (вертикальные) и линии строк (горизонтальные).
+        <em>Ячейка (grid cell)</em> — это прямоугольник, заключённый между соседними
+        линиями по обоим измерениям. Элементы Grid размещаются не «по ячейкам»,
+        а <strong>между линиями</strong> — от линии к линии.
+      </p>
+      <p>
+        Линии пронумерованы: для сетки из <em>N</em> колонок существует
+        <strong>N + 1</strong> вертикальных линий — от <code>1</code> до <code>N + 1</code>.
+        Счёт с конца идёт через отрицательные числа: <code>-1</code> — последняя линия.
+      </p>
+      <div class="lines-demo">
+        <div class="colnums">
+          <span class="ln" style="left:0%">1</span>
+          <span class="ln" style="left:25%">2</span>
+          <span class="ln" style="left:50%">3</span>
+          <span class="ln" style="left:75%">4</span>
+          <span class="ln" style="left:100%">5</span>
+        </div>
+        <div class="rownums">
+          <span class="ln" style="top:0%">1</span>
+          <span class="ln" style="top:50%">2</span>
+          <span class="ln" style="top:100%">3</span>
+        </div>
+        <div class="cells">
+          <div class="cell-line">(1,1)</div><div class="cell-line hl">(2,1)</div><div class="cell-line">(3,1)</div><div class="cell-line">(4,1)</div>
+          <div class="cell-line">(1,2)</div><div class="cell-line">(2,2)</div><div class="cell-line">(3,2)</div><div class="cell-line">(4,2)</div>
+        </div>
+      </div>
+      <p>
+        На схеме — сетка <strong>4 колонки × 2 строки</strong>: 5 вертикальных и
+        3 горизонтальных линии. Подсвечена ячейка между линиями
+        <code>2→3</code> по колонкам и <code>1→2</code> по строкам.
+      </p>
+      <div class="note">
+        💡 <strong>Частая ошибка:</strong> «поставить элемент в 2-ю колонку» — это
+        <code>grid-column: 2 / 3</code> (от линии 2 до линии 3), а не
+        <code>grid-column: 2</code>. Один номер — это не позиция, а одна линия:
+        элемент растянулся бы по всей сетке.
+      </div>
+    </section>
+
+    <!-- ============ 2. grid-column / grid-row ============ -->
+    <section>
+      <h2><span class="num">2</span>Позиционирование: grid-column и grid-row</h2>
+      <p>
+        Свойства <code>grid-column</code> и <code>grid-row</code> задаются <em>элементу</em>
+        и принимают два значения — <strong>линию старта и линию финиша</strong>:
+      </p>
+      <pre><code><span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">repeat(2, 70px)</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">8px</span>;
+}
+
+<span class="tok-com">/* вариант 1: линия старта / линия финиша */</span>
+<span class="tok-sel">.b</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">2 / 4</span>; }   <span class="tok-com">/* занимает 2-ю и 3-ю колонки */</span>
+
+<span class="tok-com">/* вариант 2: линия старта + количество ячеек (span) */</span>
+<span class="tok-sel">.b</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">2 / span 2</span>; } <span class="tok-com">/* то же самое, читается проще */</span>
+
+<span class="tok-com">/* вариант 3: отсчёт с конца через -1 */</span>
+<span class="tok-sel">.b</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">2 / -1</span>; }   <span class="tok-com">/* от 2-й линии до последней */</span>
+
+<span class="tok-com">/* только span — место выберет браузер автоматически */</span>
+<span class="tok-sel">.b</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">span 2</span>; }</code></pre>
+      <p>То же самое работает по строкам — <code>grid-row</code>. Пример на живой сетке 3×2:</p>
+      <div class="place-demo">
+        <div>cell (1,1)</div>
+        <div>cell (2,1)</div>
+        <div>cell (3,1)</div>
+        <div class="hl" style="grid-column: 1 / 4; grid-row: 2 / 3;">b: grid-column: 1 / 4</div>
+      </div>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Варианты записи, которые нужно знать:</strong></p>
+        <ul>
+          <li><code>2 / 4</code> — от линии 2 до линии 4 (2 колонки);</li>
+          <li><code>2 / span 2</code> — от линии 2, вширь на 2 колонки;</li>
+          <li><code>span 2</code> — «вширь на 2 колонки», где поместится — туда;</li>
+          <li><code>2 / -1</code> — от линии 2 до последней линии;</li>
+          <li><code>auto</code> — браузер выбирает сам (по умолчанию).</li>
+        </ul>
+      </div>
+      <div class="note">
+        ⚠️ Элемент с <strong>явным</strong> <code>grid-column</code>/<code>grid-row</code>
+        «выходит из потока» авто-размещения — остальные элементы занимают оставшиеся
+        места. Об этом поговорим в уроке 5 (<code>grid-auto-flow</code>).
+      </div>
+    </section>
+
+    <!-- ============ 3. Именованные линии ============ -->
+    <section>
+      <h2><span class="num">3</span>Именованные линии</h2>
+      <p>
+        Как и области (урок 2), линии можно <strong>называть</strong>. Имя ставится
+        в квадратные скобки <em>перед значением</em>, к которому относится линия.
+        Так шаблон читается как схема макета:
+      </p>
+      <pre><code><span class="tok-sel">.layout</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>:
+    <span class="tok-val">[sidebar-start]</span> <span class="tok-val">240px</span>
+    <span class="tok-val">[sidebar-end content-start]</span> <span class="tok-val">1fr</span>
+    <span class="tok-val">[content-end]</span>;
+}
+
+<span class="tok-sel">.sidebar</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">sidebar-start / sidebar-end</span>; }
+<span class="tok-sel">.content</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">content-start / content-end</span>; }</code></pre>
+      <p>
+        Обратите внимание: одна и та же линия может носить <strong>несколько имён</strong>
+        (<code>[sidebar-end content-start]</code>) — так «стыкуются» соседние зоны.
+        Имена линий — обычный идентификатор: можно использовать в любом
+        <code>grid-column</code>, <code>grid-row</code> и <code>grid-area</code>.
+      </p>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Именованные линии vs именованные области:</strong></p>
+        <ul>
+          <li><code>grid-template-areas</code> (урок 2) — нагляднее для <em>целых блоков макета</em> и адаптации;</li>
+          <li>именованные <em>линии</em> — гибче, когда нужно точечно управлять <em>размером</em> элемента (например, «от линии X до конца»);</li>
+          <li>оба подхода можно смешивать: области ссылаются на линии и наоборот.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 4. Перекрывание ============ -->
+    <section>
+      <h2><span class="num">4</span>Перекрывание элементов</h2>
+      <p>
+        Grid — единственная встроенная система, где элементы <strong>могут перекрывать
+        друг друга</strong>: достаточно задать пересекающиеся линии. Это удобно для
+        карточек с оверлеем, «прилипших» подписей, модальных окон внутри макета.
+      </p>
+      <pre><code><span class="tok-com">/* сетка 3 × 3 */</span>
+<span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">repeat(3, 60px)</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">8px</span>;
+}
+
+<span class="tok-sel">.a</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">1 / 3</span>; <span class="tok-prop">grid-row</span>: <span class="tok-val">1 / 3</span>; } <span class="tok-com">/* левый верхний квадрат 2×2 */</span>
+<span class="tok-sel">.b</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">2 / 4</span>; <span class="tok-prop">grid-row</span>: <span class="tok-val">2 / 4</span>; } <span class="tok-com">/* правый нижний квадрат 2×2 */</span></code></pre>
+      <div class="overlap-demo">
+        <div class="a">a: 1/3, 1/3</div>
+        <div class="b">b: 2/4, 2/4</div>
+      </div>
+      <p>
+        Порядок наложения — как в обычном потоке: <strong>элемент, который дальше в HTML,
+        оказывается сверху</strong>. Если нужно изменить, используйте
+        <code>z-index</code> (для этого у элемента должен быть контекст наложения —
+        в Grid это работает «из коробки»).
+      </p>
+    </section>
+
+    <!-- ============ 5. Плейграунд ============ -->
+    <section>
+      <h2><span class="num">5</span>Попробуйте: конструктор позиции</h2>
+      <p>
+        Сетка 4 × 3. Выберите, где разместить элемент <strong>A</strong>, —
+        и посмотрите, какой CSS-код за этим стоит:
+      </p>
+      <div class="playground">
+        <div class="controls">
+          <span class="control-label">grid-column:</span>
+          <button data-group="col" data-value="auto" class="active">auto</button>
+          <button data-group="col" data-value="1 / 3">1 / 3</button>
+          <button data-group="col" data-value="2 / 4">2 / 4</button>
+          <button data-group="col" data-value="3 / 5">3 / 5</button>
+          <button data-group="col" data-value="1 / 5">1 / 5</button>
+          <button data-group="col" data-value="2 / -1">2 / -1</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">grid-row:</span>
+          <button data-group="row" data-value="auto" class="active">auto</button>
+          <button data-group="row" data-value="1 / 2">1 / 2</button>
+          <button data-group="row" data-value="2 / 3">2 / 3</button>
+          <button data-group="row" data-value="1 / 3">1 / 3</button>
+          <button data-group="row" data-value="1 / 4">1 / 4</button>
+        </div>
+        <div class="current-value" id="pos-value"></div>
+        <div class="pos-grid" id="pos-demo">
+          <div class="cell-bg">·</div><div class="cell-bg">·</div><div class="cell-bg">·</div><div class="cell-bg">·</div>
+          <div class="cell-bg">·</div><div class="cell-bg">·</div><div class="cell-bg">·</div><div class="cell-bg">·</div>
+          <div class="cell-bg">·</div><div class="cell-bg">·</div><div class="cell-bg">·</div><div class="cell-bg">·</div>
+          <div class="pos-item" id="pos-item">A</div>
+        </div>
+      </div>
+      <div class="note">
+        💡 Попробуйте <code>grid-column: 2 / 4</code> + <code>grid-row: 1 / 3</code> —
+        элемент занимает центральную вертикальную полосу.
+        А <code>2 / -1</code> покажет, как отрицательные номера считаются от края.
+      </div>
+    </section>
+
+    <!-- ============ 6. Итоги ============ -->
+    <section>
+      <h2><span class="num">6</span>Итоги урока</h2>
+      <div class="card" style="padding:0;">
+        <table>
+          <thead>
+            <tr><th>Конструкт</th><th>Синтаксис</th><th>Что делает</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Позиция элемента</td>
+              <td><code>grid-column: 2 / 4</code></td>
+              <td>От линии 2 до линии 4 (2 колонки)</td>
+            </tr>
+            <tr>
+              <td>Ширина от старта</td>
+              <td><code>grid-column: 2 / span 2</code></td>
+              <td>От линии 2, вширь на 2 колонки</td>
+            </tr>
+            <tr>
+              <td>До последней линии</td>
+              <td><code>grid-column: 2 / -1</code></td>
+              <td>От линии 2 до края сетки</td>
+            </tr>
+            <tr>
+              <td>Именованная линия</td>
+              <td><code>[name] 1fr</code></td>
+              <td>Имя линии, стоящей <em>перед</em> значением <code>1fr</code></td>
+            </tr>
+            <tr>
+              <td>Перекрывание</td>
+              <td>пересекающиеся линии у двух элементов</td>
+              <td>Элементы накладываются; дальше по HTML — выше</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        ✅ <strong>Правило практики:</strong> для крупных блоков макета используйте
+        именованные <em>области</em> (урок 2), а для точечного позиционирования и
+        «растянуть до края» — линии и <code>span</code>. Так макет читается и
+        легко адаптируется.
+      </div>
+    </section>
+
+    <footer>
+      Урок 3 из серии «Изучаем CSS Grid» ·
+      <a href="index.html" style="color:var(--accent);">← К оглавлению</a> ·
+      <a href="02-grid-rows-areas.html" style="color:var(--accent);">← Урок 2</a>
+    </footer>
+  </div>
+
+  <script>
+    const item = document.getElementById('pos-item');
+    const valueLabel = document.getElementById('pos-value');
+    valueLabel.style.whiteSpace = 'pre';
+
+    const state = { col: 'auto', row: 'auto' };
+
+    function applyPos() {
+      item.style.gridColumn = state.col;
+      item.style.gridRow = state.row;
+      valueLabel.textContent =
+        'grid-column: ' + state.col + ';\n' +
+        'grid-row: ' + state.row + ';';
+    }
+
+    document.querySelectorAll('.playground button[data-group]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        document.querySelectorAll('.playground button[data-group="' + group + '"]')
+          .forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state[group] = btn.dataset.value;
+        applyPos();
+      });
+    });
+
+    applyPos();
+  </script>
+</body>
+</html>
