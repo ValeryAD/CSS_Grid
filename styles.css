@@ -553,6 +553,169 @@ td code { white-space: nowrap; }
   color: var(--muted);
 }
 
+/* ---------- Урок 4: 4 значения выравнивания ---------- */
+.align-demo {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: 120px auto;
+  gap: 10px 12px;
+  margin-top: 1rem;
+  align-items: center;
+}
+
+.align-demo .ad-box {
+  height: 48px;
+  width: 72px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.align-demo .ad-stretch { width: auto; }
+
+.align-demo .ad-cap {
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- Урок 4: элементы внутри ячеек ---------- */
+.items-demo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 110px);
+  gap: 10px;
+  margin-top: 1rem;
+  place-items: center;
+}
+
+.items-demo > div {
+  width: 76px;
+  height: 48px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+.items-demo > div.self {
+  width: auto;
+  min-width: 76px;
+  background: rgba(74, 222, 128, 0.15);
+  border-color: var(--green);
+  color: var(--green);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  padding: 0 0.5rem;
+}
+
+/* ---------- Урок 4: сетка в контейнере ---------- */
+.content-demo {
+  display: grid;
+  grid-template-columns: repeat(3, 120px);
+  grid-template-rows: repeat(2, 72px);
+  gap: 12px;
+  height: 330px;
+  margin-top: 1rem;
+  padding: 12px;
+  border: 1px dashed var(--muted);
+  border-radius: var(--radius);
+  background: rgba(15, 23, 42, 0.5);
+  place-items: center;
+  justify-content: space-evenly;
+  align-content: space-evenly;
+}
+
+.content-demo > div {
+  width: 72px;
+  height: 46px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- Урок 4: margin: auto ---------- */
+.margin-auto-demo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 88px);
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.margin-auto-demo > div {
+  background: var(--surface);
+  border: 1px solid var(--surface-2);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.margin-auto-demo .plain {
+  grid-column: 2 / 4;
+  justify-self: end;
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.margin-auto-demo .auto {
+  width: 220px;
+  margin-inline: auto;
+  background: rgba(74, 222, 128, 0.15);
+  border-color: var(--green);
+  color: var(--green);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+/* ---------- Урок 4: плейграунд выравнивания ---------- */
+.align-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 120px);
+  grid-template-rows: repeat(2, 72px);
+  gap: 12px;
+  height: 340px;
+  padding: 12px;
+  border: 1px dashed var(--muted);
+  border-radius: var(--radius);
+  background: rgba(15, 23, 42, 0.5);
+  transition: all 0.3s ease;
+}
+
+.align-grid > div {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--accent);
+  transition: all 0.3s ease;
+}
+
 /* ---------- Подвал ---------- */
 footer {
   margin-top: 3rem;

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 4: Выравнивание элементов и контейнера</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a href="index.html">← К оглавлению</a>
+      <a href="01-grid-basics.html">← Урок 1</a>
+      <a href="02-grid-rows-areas.html">← Урок 2</a>
+      <a href="03-grid-lines-position.html">← Урок 3</a>
+    </nav>
+
+    <header>
+      <h1>Выравнивание элементов и контейнера</h1>
+      <p>Урок 4: как элементы «плывут» в своих ячейках (<code>justify-*</code> / <code>align-*</code>) и как сама сетка располагается в контейнере (<code>place-content</code>), плюс трюк с <code>margin: auto</code></p>
+    </header>
+
+    <!-- ============ 1. Два измерения выравнивания ============ -->
+    <section>
+      <h2><span class="num">1</span>Почему элементы «растягиваются» и откуда берутся оси</h2>
+      <p>
+        По умолчанию элемент Grid <strong>растягивается на всю свою ячейку</strong>
+        (<code>stretch</code>) — в отличие от обычного потока, где блок сам решает,
+        какой ему быть. Чтобы изменить поведение, Grid даёт <strong>четыре
+        свойства-пары</strong> — по одному на каждую ось:
+      </p>
+      <ul>
+        <li><strong>Горизонталь</strong> (ось колонок) — <code>justify-*</code>;</li>
+        <li><strong>Вертикаль</strong> (ось строк) — <code>align-*</code>;</li>
+        <li>«одним словом» — <code>place-*</code> (сокращение обеих осей).</li>
+      </ul>
+      <p>
+        У каждой пары есть два уровня действия: на <em>элемент внутри его ячейки</em>
+        и на <em>всю сетку внутри контейнера</em>. Разберём оба.
+      </p>
+      <p>Вот четыре значения выравнивания по горизонтали — одно в каждой колонке:</p>
+      <div class="align-demo">
+        <div class="ad-box ad-stretch">box</div>
+        <div class="ad-box" style="justify-self:start">box</div>
+        <div class="ad-box" style="justify-self:center">box</div>
+        <div class="ad-box" style="justify-self:end">box</div>
+        <div class="ad-cap">justify-self: stretch</div>
+        <div class="ad-cap">justify-self: start</div>
+        <div class="ad-cap">justify-self: center</div>
+        <div class="ad-cap">justify-self: end</div>
+      </div>
+      <div class="note">
+        💡 Запоминалка: <strong>justify</strong> = «справедливо по горизонтали»,
+        <strong>align</strong> = «вертикально». Если запутались — подумайте:
+        текст выравнивают по <em>оси</em> (justify-content: space-between у
+        колонок), а строки — по <em>линиям</em> (align-content).
+      </div>
+    </section>
+
+    <!-- ============ 2. Выравнивание элементов в ячейках ============ -->
+    <section>
+      <h2><span class="num">2</span>Элементы в ячейках: justify-items, align-items, place-items</h2>
+      <p>
+        Свойства задаются <em>контейнеру</em> (<code>display: grid</code>) и влияют
+        на <strong>все его элементы</strong>:
+      </p>
+      <pre><code><span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">repeat(2, 96px)</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">10px</span>;
+
+  <span class="tok-com">/* по горизонтали и по вертикали — по центру ячеек */</span>
+  <span class="tok-prop">place-items</span>: <span class="tok-val">center</span>;
+
+  <span class="tok-com">/* то же самое, но по отдельности: */</span>
+  <span class="tok-com">/* justify-items: center;  — по горизонтали */</span>
+  <span class="tok-com">/* align-items:   start;   — по вертикали   */</span>
+}
+
+<span class="tok-com">/* у одного элемента — своя позиция, перекрывает общее */</span>
+<span class="tok-sel">.card</span> { <span class="tok-prop">align-self</span>: <span class="tok-val">start</span>; <span class="tok-prop">justify-self</span>: <span class="tok-val">end</span>; }</code></pre>
+      <p>Живой пример — все элементы по центру, последний «выбивается» в угол:</p>
+      <div class="items-demo">
+        <div>1</div>
+        <div>2</div>
+        <div>3</div>
+        <div>4</div>
+        <div>5</div>
+        <div class="self" style="align-self:start; justify-self:end;">align-self: start<br>justify-self: end</div>
+      </div>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Полный набор «на элемент»:</strong></p>
+        <ul>
+          <li><code>justify-self</code> / <code>align-self</code> — один конкретный элемент;</li>
+          <li><code>justify-items</code> / <code>align-items</code> — все элементы контейнера;</li>
+          <li><code>place-items</code> — сокращение обоих (<code>place-items: center</code> = оба по центру);</li>
+          <li>значения: <code>stretch</code> (по умолчанию), <code>start</code>, <code>end</code>, <code>center</code>;</li>
+          <li>бонус: <code>baseline</code> — выровнять текст разных элементов по базовой линии.</li>
+        </ul>
+      </div>
+      <div class="note">
+        ⚠️ <code>justify-items</code>/<code>align-items</code> влияют только на то,
+        <em>как элемент сидит в своей ячейке</em>. Если трексы <code>1fr</code>,
+        свободного места «на выравнивание» почти нет — используйте их вместе с
+        фиксированными размерами элементов (как в плейграунде ниже).
+      </div>
+    </section>
+
+    <!-- ============ 3. Выравнивание сетки в контейнере ============ -->
+    <section>
+      <h2><span class="num">3</span>Сетка в контейнере: justify-content, align-content, place-content</h2>
+      <p>
+        А если трексы имеют <strong>фиксированные размеры</strong>, а контейнер
+        больше, чем вся сетка? Появляется свободное пространство <em>вокруг
+        трексов</em> — и его распределяют свойства <code>justify-content</code>
+        (горизонталь) и <code>align-content</code> (вертикаль):
+      </p>
+      <pre><code><span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 120px)</span>; <span class="tok-com">/* фикс. размеры — условие! */</span>
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">repeat(2, 72px)</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">12px</span>;
+  <span class="tok-prop">height</span>: <span class="tok-val">340px</span>; <span class="tok-com">/* контейнер больше, чем сетка */</span>
+
+  <span class="tok-prop">justify-content</span>: <span class="tok-val">space-evenly</span>; <span class="tok-com">/* по горизонтали */</span>
+  <span class="tok-prop">align-content</span>: <span class="tok-val">space-evenly</span>;   <span class="tok-com">/* по вертикали   */</span>
+
+  <span class="tok-com">/* или одной строкой: */</span>
+  <span class="tok-com">/* place-content: space-evenly; */</span>
+}</code></pre>
+      <div class="content-demo">
+        <div>1</div><div>2</div><div>3</div>
+        <div>4</div><div>5</div><div>6</div>
+      </div>
+      <p>На схеме — <code>space-evenly</code>: одинаковые отступы до края и между трексами. Шесть значений на выбор:</p>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Значения justify-content / align-content:</strong></p>
+        <ul>
+          <li><code>start</code> — вся сетка прижата к началу (по умолчанию — «top left»);</li>
+          <li><code>end</code> — к концу;</li>
+          <li><code>center</code> — по центру свободной зоны;</li>
+          <li><code>space-between</code> — трексы прижаты к краям, всё свободное — между ними;</li>
+          <li><code>space-around</code> — отступы вокруг каждого трека, на краях — вдвое меньше;</li>
+          <li><code>space-evenly</code> — одинаковые отступы везде.</li>
+        </ul>
+      </div>
+      <div class="note">
+        💡 Ключевое отличие от <em>items</em>: <strong>content</strong>-свойства
+        двигают <em>трексы целиком</em> (вместе с элементами), а
+        <em>items</em>-свойства двигают <em>элементы внутри своих ячеек</em>.
+        <code>space-*</code> работают только когда трексы не растягиваются на всё
+        пространство — то есть не <code>fr</code> до краёв.
+      </div>
+    </section>
+
+    <!-- ============ 4. margin: auto ============ -->
+    <section>
+      <h2><span class="num">4</span>margin: auto — «суперсила» Grid</h2>
+      <p>
+        В Grid автоматические отступы работают иначе, чем в обычном потоке:
+        <code>margin: auto</code> <strong>съедает всё свободное место</strong>
+        в пределах области элемента. Это самый удобный способ
+        <em>центрировать или смещать</em> один конкретный элемент:
+      </p>
+      <pre><code><span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">repeat(2, 88px)</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">10px</span>;
+}
+
+<span class="tok-com">/* элемент занимает 2 колонки, но сам — по центру этой области */</span>
+<span class="tok-sel">.b</span> {
+  <span class="tok-prop">grid-column</span>: <span class="tok-val">2 / 4</span>;
+  <span class="tok-prop">width</span>: <span class="tok-val">180px</span>;
+  <span class="tok-prop">margin-inline</span>: <span class="tok-val">auto</span>; <span class="tok-com">/* = margin-left + margin-right: auto */</span>
+}
+
+<span class="tok-com">/* отцентрировать по обеим осям: */</span>
+<span class="tok-sel">.c</span> { <span class="tok-prop">margin</span>: <span class="tok-val">auto</span>; }</code></pre>
+      <div class="margin-auto-demo">
+        <div class="ctx">a</div>
+        <div class="plain">justify-self: end</div>
+        <div class="ctx">c</div>
+        <div class="auto" style="grid-column: 1 / 4;">margin-inline: auto</div>
+      </div>
+      <div class="note">
+        ⚠️ Элемент с <code>margin: auto</code> и явным <code>grid-column</code>
+        (или только <code>margin: auto</code>) <strong>выходит из потока</strong>
+        авто-размещения — браузер больше не «ставит его по порядку».
+        Как это сочетается с <code>grid-auto-flow</code>, разберём в уроке 5.
+      </div>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Когда что использовать:</strong></p>
+        <ul>
+          <li>«все элементы по центру ячеек» — <code>place-items: center</code>;</li>
+          <li>«один элемент — в другой угол, остальные как обычно» — <code>align-self</code>/<code>justify-self</code>;</li>
+          <li>«вся сетка по центру/в конец контейнера» — <code>place-content</code>;</li>
+          <li>«один широкий блок по центру своей области» — <code>margin-inline: auto</code> (работает даже когда область шире самого блока).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 5. Плейграунд ============ -->
+    <section>
+      <h2><span class="num">5</span>Попробуйте: конструктор выравнивания</h2>
+      <p>
+        Контейнер с фиксированной высотой и сеткой из 6 элементов. Меняйте
+        <code>justify-content</code>, <code>align-content</code> и
+        <code>place-items</code> — и смотрите, как меняются позиции:
+      </p>
+      <div class="playground">
+        <div class="controls">
+          <span class="control-label">justify-content:</span>
+          <button data-group="jc" data-value="start" class="active">start</button>
+          <button data-group="jc" data-value="end">end</button>
+          <button data-group="jc" data-value="center">center</button>
+          <button data-group="jc" data-value="space-between">space-between</button>
+          <button data-group="jc" data-value="space-around">space-around</button>
+          <button data-group="jc" data-value="space-evenly">space-evenly</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">align-content:</span>
+          <button data-group="ac" data-value="start" class="active">start</button>
+          <button data-group="ac" data-value="end">end</button>
+          <button data-group="ac" data-value="center">center</button>
+          <button data-group="ac" data-value="space-between">space-between</button>
+          <button data-group="ac" data-value="space-around">space-around</button>
+          <button data-group="ac" data-value="space-evenly">space-evenly</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">place-items:</span>
+          <button data-group="pi" data-value="stretch" class="active">stretch</button>
+          <button data-group="pi" data-value="start">start</button>
+          <button data-group="pi" data-value="center">center</button>
+          <button data-group="pi" data-value="end">end</button>
+        </div>
+        <div class="current-value" id="align-value"></div>
+        <div class="align-grid" id="align-demo">
+          <div>1</div><div>2</div><div>3</div>
+          <div>4</div><div>5</div><div>6</div>
+        </div>
+      </div>
+      <div class="note">
+        💡 Попробуйте <code>place-items: stretch</code> + <code>justify-content: space-evenly</code>:
+        элементы заполняют ячейки, но сами трексы «расходятся» по контейнеру.
+        А <code>place-items: center</code> + <code>place-content: center</code>
+        — «всё по центру».
+      </div>
+    </section>
+
+    <!-- ============ 6. Итоги ============ -->
+    <section>
+      <h2><span class="num">6</span>Итоги урока</h2>
+      <div class="card" style="padding:0;">
+        <table>
+          <thead>
+            <tr><th>Задача</th><th>Свойство</th><th>Кто задаёт</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Один элемент — в углу ячейки</td>
+              <td><code>justify-self</code> + <code>align-self</code></td>
+              <td>Элементу</td>
+            </tr>
+            <tr>
+              <td>Все элементы — по центру ячеек</td>
+              <td><code>place-items: center</code></td>
+              <td>Контейнеру</td>
+            </tr>
+            <tr>
+              <td>Вся сетка — в центр/к краю контейнера</td>
+              <td><code>place-content</code> (или justify- + align-content)</td>
+              <td>Контейнеру</td>
+            </tr>
+            <tr>
+              <td>Один широкий блок по центру области</td>
+              <td><code>margin-inline: auto</code></td>
+              <td>Элементу</td>
+            </tr>
+            <tr>
+              <td>Распределить свободное место между трексами</td>
+              <td><code>space-between</code> / <code>space-around</code> / <code>space-evenly</code></td>
+              <td>Контейнеру (только при фикс. трексах)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        ✅ <strong>Правило практики:</strong> для «всего сразу» используйте
+        <code>place-items</code> и <code>place-content</code> (короче и читается),
+        а <code>justify-*</code>/<code>align-*</code> — когда нужно отдельно
+        настроить две оси. А <code>margin: auto</code> оставьте для «точечного»
+        центрирования одного элемента.
+      </div>
+    </section>
+
+    <footer>
+      Урок 4 из серии «Изучаем CSS Grid» ·
+      <a href="index.html" style="color:var(--accent);">← К оглавлению</a> ·
+      <a href="03-grid-lines-position.html" style="color:var(--accent);">← Урок 3</a>
+    </footer>
+  </div>
+
+  <script>
+    const demo = document.getElementById('align-demo');
+    const valueLabel = document.getElementById('align-value');
+    valueLabel.style.whiteSpace = 'pre';
+
+    const state = { jc: 'start', ac: 'start', pi: 'stretch' };
+
+    function apply() {
+      demo.style.justifyContent = state.jc;
+      demo.style.alignContent = state.ac;
+      demo.style.placeItems = state.pi;
+      valueLabel.textContent =
+        'justify-content: ' + state.jc + ';\n' +
+        'align-content: ' + state.ac + ';\n' +
+        'place-items: ' + state.pi + ';';
+    }
+
+    document.querySelectorAll('.playground button[data-group]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        document.querySelectorAll('.playground button[data-group="' + group + '"]')
+          .forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state[group] = btn.dataset.value;
+        apply();
+      });
+    });
+
+    apply();
+  </script>
+</body>
+</html>
