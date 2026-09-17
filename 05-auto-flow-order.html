@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 5: Порядок и авто-размещение</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a href="index.html">← К оглавлению</a>
+      <a href="02-grid-rows-areas.html">← Урок 2</a>
+      <a href="03-grid-lines-position.html">← Урок 3</a>
+      <a href="04-alignment.html">← Урок 4</a>
+    </nav>
+
+    <header>
+      <h1>Порядок и авто-размещение</h1>
+      <p>Урок 5: как браузер сам расставляет элементы — неявные строки и колонки (<code>grid-auto-rows</code>), направление потока (<code>grid-auto-flow</code>), перестановка через <code>order</code> и заполнение «дыр» (<code>dense</code>)</p>
+    </header>
+
+    <!-- ============ 1. Неявная сетка ============ -->
+    <section>
+      <h2><span class="num">1</span>Авто-размещение и неявные строки</h2>
+      <p>
+        Пока вы не задаёте элементам явную позицию (урок 3), браузер сам
+        «ставит их по порядку»: слева направо, строка за строкой.
+        Если элементов больше, чем поместится в объявленные строки,
+        Grid <strong>сам создаёт новые — неявные (implicit)</strong>.
+        Их размер задаётся через <code>grid-auto-rows</code> (и
+        <code>grid-auto-columns</code> для неявных колонок):
+      </p>
+      <pre><code><span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">52px</span>;   <span class="tok-com">/* одна ЯВНАЯ строка */</span>
+  <span class="tok-prop">grid-auto-rows</span>: <span class="tok-val">52px</span>;      <span class="tok-com">/* все НЕЯВНЫЕ строки — 52px */</span>
+  <span class="tok-prop">gap</span>: <span class="tok-val">8px</span>;
+}
+
+<span class="tok-com">/* 7 элементов → 1-я строка явная, 2-я и 3-я неявные */</span></code></pre>
+      <div class="flow-demo">
+        <div>1</div><div>2</div><div>3</div>
+        <div class="implicit">4</div><div class="implicit">5</div><div class="implicit">6</div>
+        <div class="implicit">7</div>
+      </div>
+      <p>
+        Фиолетовые элементы сидят на <strong>неявных строках</strong>.
+        Без <code>grid-auto-rows</code> их высота была бы
+        «под содержимое» (auto) — и сетка выглядела бы «сломанной».
+      </p>
+      <div class="note">
+        💡 Правило: объявили <em>количество</em> строк/колонок —
+        подумайте и о <em>размере неявных</em>.
+        <code>grid-template-rows: repeat(2, 1fr)</code> +
+        <code>grid-auto-rows: 1fr</code> — классика «все строки одинаковые».
+      </div>
+    </section>
+
+    <!-- ============ 2. Направление потока ============ -->
+    <section>
+      <h2><span class="num">2</span>Направление: grid-auto-flow: row | column</h2>
+      <p>
+        По умолчанию элементы идут <strong>по строкам</strong> (row flow).
+        Свойство <code>grid-auto-flow</code> позволяет развернуть поток
+        <strong>по колонкам</strong> — элементы будут идти сверху вниз,
+        колонка за колонкой. Неявными становятся уже <em>колонки</em>:
+      </p>
+      <pre><code><span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">repeat(3, 52px)</span>; <span class="tok-com">/* явные строки */</span>
+  <span class="tok-prop">grid-auto-flow</span>: <span class="tok-val">column</span>;      <span class="tok-com">/* расставлять по колонкам */</span>
+  <span class="tok-prop">grid-auto-columns</span>: <span class="tok-val">1fr</span>;     <span class="tok-com">/* размер неявных колонок */</span>
+  <span class="tok-prop">gap</span>: <span class="tok-val">8px</span>;
+}
+
+<span class="tok-com">/* 8 элементов: 1-я и 2-я колонки явные (по 3 элемента), 3-я — неявная */</span></code></pre>
+      <div class="flow-col-demo">
+        <div>1</div><div>2</div><div>3</div>
+        <div>4</div><div>5</div><div>6</div>
+        <div class="implicit">7</div><div class="implicit">8</div>
+      </div>
+      <div class="note">
+        ⚠️ В column-flow явными считаются <strong>строки</strong>
+        (<code>grid-template-rows</code>), а неявными — <em>колонки</em>.
+        Это частая путаница: <code>grid-template-columns</code> здесь
+        почти не нужен.
+      </div>
+    </section>
+
+    <!-- ============ 3. order ============ -->
+    <section>
+      <h2><span class="num">3</span>Перестановка элементов: order</h2>
+      <p>
+        Как и в Flexbox, <code>order</code> меняет <strong>порядок
+        авто-размещения</strong>: элемент с меньшим <code>order</code>
+        ставится раньше. Это удобно, когда порядок в HTML важен
+        для семантики/доступности, а визуально нужен другой:
+      </p>
+      <pre><code><span class="tok-com">/* исходный порядок в HTML: A B C D E F */</span>
+<span class="tok-sel">.c</span> { <span class="tok-prop">order</span>: <span class="tok-val">-1</span>; }   <span class="tok-com">/* C — первым → C A B D E F */</span>
+<span class="tok-sel">.f</span> { <span class="tok-prop">order</span>: <span class="tok-val">20</span>; }   <span class="tok-com">/* F — в самый конец (по умолчанию 0) */</span>
+
+<span class="tok-com">/* у элемента с ЯВНОЙ позицией order ничего не делает: */</span>
+<span class="tok-sel">.d</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">3</span>; <span class="tok-prop">grid-row</span>: <span class="tok-val">1</span>; <span class="tok-prop">order</span>: <span class="tok-val">99</span>; }</code></pre>
+      <div class="order-demo">
+        <div>A</div>
+        <div>B</div>
+        <div class="neg" style="order:-1">C</div>
+        <div>D</div>
+        <div>E</div>
+        <div class="pos" style="order:20">F</div>
+      </div>
+      <p style="color:var(--muted); font-size:0.85rem;">
+        Порядок в HTML: A B C D E F → визуально получилось:
+        <strong style="color:var(--green);">C</strong> A B D E
+        <strong style="color:#d8b4fe;">F</strong>
+      </p>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Важные ограничения order:</strong></p>
+        <ul>
+          <li>действует только на <em>авто-размещение</em> — элемент с явным
+              <code>grid-column</code>/<code>grid-row</code> (урок 3) стоит на месте;</li>
+          <li>элементы с одинаковым <code>order</code> идут в исходном порядке HTML;</li>
+          <li>из HTML-потока ничего не исчезает — для скринридеров и «честного»
+              кода порядок остаётся как в разметке.</li>
+        </ul>
+      </div>
+      <div class="note">
+        ⚠️ Напоминание из урока 4: элемент с <code>margin: auto</code>
+        и явной позицией тоже <strong>выходит из потока авто-размещения</strong> —
+        браузер «ставит его сразу», и это сдвигает места последующих элементов.
+      </div>
+    </section>
+
+    <!-- ============ 4. dense ============ -->
+    <section>
+      <h2><span class="num">4</span>Дыры и back-filling: dense</h2>
+      <p>
+        Когда элемент шире, чем место в текущей строке, он «перепрыгивает»
+        на новую строку, а позади остаётся <strong>дыра</strong>.
+        Обычный поток (row flow) дыру не заполняет — курсор только идёт вперёд:
+      </p>
+      <pre><code><span class="tok-sel">.grid</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(4, 1fr)</span>;
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">repeat(3, 56px)</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">8px</span>;
+}
+
+<span class="tok-sel">.b</span>, <span class="tok-sel">.d</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">span 2</span>; } <span class="tok-com">/* B и D — двойная ширина */</span>
+
+<span class="tok-com">/* C (ширина 1) в обычной раскладке — во 2-ю строку, дыра на (1,4).
+       С dense он «откатывается» назад и заполняет её: */</span>
+<span class="tok-sel">.grid-dense</span> { <span class="tok-prop">grid-auto-flow</span>: <span class="tok-val">row dense</span>; }</code></pre>
+      <div class="dense-demo">
+        <div>A</div>
+        <div class="wide">B</div>
+        <div class="hole" style="grid-column:4; grid-row:1;">дыра</div>
+        <div>C</div>
+        <div class="wide">D</div>
+        <div class="hole" style="grid-column:4; grid-row:2;">дыра</div>
+        <div>E</div><div>F</div><div>G</div><div>H</div>
+      </div>
+      <p>
+        С <code>grid-auto-flow: dense</code> браузер заглядывает <em>назад</em>
+        и ставит узкие элементы в первые свободные ячейки — C занял бы (1,4),
+        E — (2,4). Обратная сторона: <strong>визуальный порядок больше не
+        совпадает с порядком в HTML</strong>.
+      </p>
+      <div class="note">
+        ⚠️ <code>dense</code> — инструмент для <em>плотных</em> раскладок
+        (галереи, дашборды, канбан). Для контентных страниц с логическим
+        порядком (карточки товара, шаги, статьи) оставьте обычный
+        <code>row</code> flow — дыра лучше, чем «перепрыгивающие» элементы.
+      </div>
+    </section>
+
+    <!-- ============ 5. Плейграунд ============ -->
+    <section>
+      <h2><span class="num">5</span>Попробуйте: конструктор потока</h2>
+      <p>
+        Сетка 4 колонки. B и D занимают 2 колонки — из-за этого в
+        обычной раскладке появляются «дыры». Переключайте
+        <code>grid-auto-flow</code>, включайте <code>dense</code>
+        и меняйте <code>order</code> у отдельных элементов:
+      </p>
+      <div class="playground">
+        <div class="controls">
+          <span class="control-label">grid-auto-flow:</span>
+          <button data-group="flow" data-value="row" class="active">row</button>
+          <button data-group="flow" data-value="column">column</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">dense:</span>
+          <button data-group="dense" data-value="off" class="active">off</button>
+          <button data-group="dense" data-value="on">on</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">order:</span>
+          <button data-group="ord" data-value="none" class="active">без изменений</button>
+          <button data-group="ord" data-value="cfirst">C первым</button>
+          <button data-group="ord" data-value="blast">B последним</button>
+        </div>
+        <div class="current-value" id="flow-value"></div>
+        <div class="flow-grid" id="flow-demo">
+          <div>A</div>
+          <div class="wide">B</div>
+          <div class="hl">C</div>
+          <div class="wide">D</div>
+          <div class="hl">E</div>
+          <div>F</div><div>G</div><div>H</div>
+        </div>
+      </div>
+      <div class="note">
+        💡 Сравните: <code>row</code> + <code>dense off</code> (дыра справа)
+        против <code>row</code> + <code>dense on</code> (C и E заполняют дыры).
+        А <code>column</code> flow развернёт всю раскладку — элементы
+        пойдут сверху вниз.
+      </div>
+    </section>
+
+    <!-- ============ 6. Итоги ============ -->
+    <section>
+      <h2><span class="num">6</span>Итоги урока</h2>
+      <div class="card" style="padding:0;">
+        <table>
+          <thead>
+            <tr><th>Задача</th><th>Свойство</th><th>Замечание</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Размер неявных строк/колонок</td>
+              <td><code>grid-auto-rows</code> / <code>grid-auto-columns</code></td>
+              <td>Обязательно, если элементов больше, чем явных треков</td>
+            </tr>
+            <tr>
+              <td>Направление расстановки</td>
+              <td><code>grid-auto-flow: row | column</code></td>
+              <td>column → неявными становятся колонки</td>
+            </tr>
+            <tr>
+              <td>Перестановка без изменения HTML</td>
+              <td><code>order</code></td>
+              <td>Не влияет на явные позиции</td>
+            </tr>
+            <tr>
+              <td>Заполнение «дыр» назад</td>
+              <td><code>grid-auto-flow: row dense</code></td>
+              <td>Визуальный порядок ≠ порядок HTML</td>
+            </tr>
+            <tr>
+              <td>Явная позиция элемента</td>
+              <td><code>grid-column</code> / <code>grid-row</code></td>
+              <td>Элемент «выходит из потока» (урок 3)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        ✅ <strong>Правило практики:</strong> сначала расставьте ядро макета
+        явными позициями/областями (уроки 2–3), «живую» ленту элементов
+        оставьте авто-размещению, а <code>dense</code> включайте только
+        для плотных галерей и дашбордов.
+      </div>
+    </section>
+
+    <footer>
+      Урок 5 из серии «Изучаем CSS Grid» ·
+      <a href="index.html" style="color:var(--accent);">← К оглавлению</a> ·
+      <a href="04-alignment.html" style="color:var(--accent);">← Урок 4</a>
+    </footer>
+  </div>
+
+  <script>
+    const demo = document.getElementById('flow-demo');
+    const valueLabel = document.getElementById('flow-value');
+    valueLabel.style.whiteSpace = 'pre';
+
+    const items = Array.from(demo.children);
+    const state = { flow: 'row', dense: 'off', ord: 'none' };
+
+    function apply() {
+      demo.style.gridAutoFlow = state.flow + (state.dense === 'on' ? ' dense' : '');
+
+      items.forEach(el => el.style.order = '');
+      if (state.ord === 'cfirst') items[2].style.order = -1;
+      if (state.ord === 'blast') items[1].style.order = 20;
+
+      let css = 'grid-auto-flow: ' + state.flow + (state.dense === 'on' ? ' dense' : '') + ';\n';
+      if (state.ord === 'cfirst') css += '\nC { order: -1; }';
+      if (state.ord === 'blast') css += '\nB { order: 20; }';
+      valueLabel.textContent = css;
+    }
+
+    document.querySelectorAll('.playground button[data-group]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        document.querySelectorAll('.playground button[data-group="' + group + '"]')
+          .forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state[group === 'ord' ? 'ord' : group] = btn.dataset.value;
+        apply();
+      });
+    });
+
+    apply();
+  </script>
+</body>
+</html>
