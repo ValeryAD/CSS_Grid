@@ -847,6 +847,261 @@ td code { white-space: nowrap; }
   color: var(--green);
 }
 
+/* ---------- Урок 6: grid внутри grid ---------- */
+.nested-demo {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 1rem;
+}
+
+.nested-demo article {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 12px;
+  background: var(--surface);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+}
+
+.nested-demo .n-title {
+  grid-column: 1 / -1;
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid var(--surface-2);
+  padding-bottom: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.nested-demo article > div:not(.n-title) {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  min-height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ---------- Урок 6: flexbox + grid ---------- */
+.mix-demo {
+  background: var(--surface);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  overflow: hidden;
+  margin-top: 1rem;
+}
+
+.mix-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--surface-2);
+  font-weight: 600;
+}
+
+.mix-head .mix-btn {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border: 1px solid var(--accent);
+  padding: 0.3rem 0.8rem;
+  border-radius: 8px;
+  font-size: 0.85rem;
+}
+
+.mix-body {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 1rem;
+}
+
+.mix-body > div {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 0.6rem;
+  text-align: center;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.mix-body small {
+  display: block;
+  color: var(--muted);
+  font-weight: 400;
+  font-size: 0.75rem;
+  margin-top: 0.2rem;
+}
+
+/* ---------- Урок 6: раздувание / min-width: 0 ---------- */
+.blow-wrap { margin-top: 1.5rem; }
+
+.blow-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 0.4rem;
+  font-family: "Cascadia Code", Consolas, monospace;
+}
+
+.blow-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  outline: 2px dashed var(--surface-2);
+  outline-offset: 8px;
+  border-radius: var(--radius);
+}
+
+.blow-grid > div {
+  min-height: 60px;
+  padding: 0 0.8rem;
+  display: flex;
+  align-items: center;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.85rem;
+}
+
+.blow-grid .long { white-space: nowrap; }
+
+.blow-grid .fixed { min-width: 0; overflow: hidden; }
+
+/* ---------- Урок 6: практика — карточки профилей ---------- */
+.profiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 1rem;
+}
+
+.profile {
+  display: grid;
+  grid-template-columns: 88px 1fr;
+  grid-template-areas:
+    "photo title"
+    "photo meta"
+    "tags  tags";
+  gap: 12px;
+  padding: 16px;
+  background: var(--surface);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  align-items: center;
+}
+
+.profile .photo {
+  grid-area: photo;
+  width: 88px;
+  height: 88px;
+  border-radius: 12px;
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.profile .title { grid-area: title; font-weight: 600; font-size: 1.05rem; }
+
+.profile .meta { grid-area: meta; color: var(--muted); font-size: 0.85rem; }
+
+.profile .tags {
+  grid-area: tags;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.profile .tags span {
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid var(--green);
+  color: var(--green);
+  text-align: center;
+  border-radius: 8px;
+  padding: 0.3rem;
+  font-size: 0.78rem;
+}
+
+/* ---------- Урок 6: конструктор вложенных макетов ---------- */
+.nest-demo {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.nest-demo.is-flex { display: flex; }
+
+.nest-demo.is-flex .ncard { flex: 1; }
+
+.ncard {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  gap: 8px;
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 10px;
+  min-height: 150px;
+  transition: all 0.25s ease;
+}
+
+.ncard.is-flex {
+  display: flex;
+  flex-direction: column;
+}
+
+.ncard-h {
+  font-weight: 600;
+  color: var(--text);
+  border-bottom: 1px solid var(--surface-2);
+  padding-bottom: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.ncard-b {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  align-content: start;
+}
+
+.ncard.is-flex .ncard-b {
+  display: flex;
+  flex-direction: column;
+}
+
+.ncard-b span {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 6px;
+  padding: 0.35rem;
+  text-align: center;
+  font-size: 0.78rem;
+}
+
+.ncard-b .longtxt {
+  display: none;
+  white-space: nowrap;
+  grid-column: 1 / -1;
+}
+
+.ncard-b.has-long .longtxt { display: block; }
+
+.nest-demo.minw0 .ncard { min-width: 0; overflow: hidden; }
+
 /* ---------- Подвал ---------- */
 footer {
   margin-top: 3rem;

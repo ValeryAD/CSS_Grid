@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 6: Вложенность (Nesting)</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a href="index.html">← К оглавлению</a>
+      <a href="03-grid-lines-position.html">← Урок 3</a>
+      <a href="04-alignment.html">← Урок 4</a>
+      <a href="05-auto-flow-order.html">← Урок 5</a>
+    </nav>
+
+    <header>
+      <h1>Вложенность (Nesting)</h1>
+      <p>Урок 6: grid внутри grid, grid и flexbox рядом, почему длинные строки «раздувают» ячейки и как чинить это через <code>min-width: 0</code>, практика — карточки с внутренними сетками</p>
+    </header>
+
+    <!-- ============ 1. Grid внутри grid ============ -->
+    <section>
+      <h2><span class="num">1</span>Grid внутри grid</h2>
+      <p>
+        Любой элемент сетки может сам стать <strong>контейнером Grid</strong>.
+        Вложенная сетка «изолирована»: её строки, колонки и
+        <code>gap</code> не связаны с родительской — каждый контейнер
+        независимо вычисляет свои треки. Это главный приём для карточек,
+        плиток и дашбордов:
+      </p>
+      <pre><code><span class="tok-sel">.cards</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">1fr 1fr</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">16px</span>;
+}
+
+<span class="tok-com">/* каждая карточка — САМОСТОЯТЕЛЬНАЯ сетка */</span>
+<span class="tok-sel">.cards &gt; article</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">8px</span>;
+}
+
+<span class="tok-sel">.cards &gt; article .title</span> {
+  <span class="tok-prop">grid-column</span>: <span class="tok-val">1 / -1</span>;   <span class="tok-com">/* заголовок — на всю ширину (урок 3) */</span>
+}</code></pre>
+      <div class="nested-demo">
+        <article>
+          <div class="n-title">Карточка 1 — внутренняя сетка 3×1</div>
+          <div>200</div><div>42</div><div>7.5</div>
+        </article>
+        <article>
+          <div class="n-title">Карточка 2 — та же сетка, другие данные</div>
+          <div>128</div><div>16</div><div>9.1</div>
+        </article>
+      </div>
+      <div class="note">
+        💡 Свойства <em>не</em> «протекают» через вложенность:
+        <code>gap</code>, треки и выравнивание родительской сетки ничего
+        не наследуют внутрь вложенной. Свободная комбинация:
+        grid в grid, grid в flex, flex в flex — выбирайте под задачу.
+      </div>
+    </section>
+
+    <!-- ============ 2. Grid и Flexbox ============ -->
+    <section>
+      <h2><span class="num">2</span>Grid и Flexbox: когда что</h2>
+      <p>
+        Оба раскладывают элементы, но <strong>flexbox — одномерный</strong>
+        (раздаёт элементы вдоль одной линии: строка или колонка),
+        а <strong>Grid — двумерный</strong> (строки <em>и</em> колонки
+        одновременно). Поэтому в одном макете они прекрасно сочетаются:
+      </p>
+      <ul>
+        <li><strong>Flexbox</strong> — «хлебные» ряды: шапка карточки
+            (заголовок + кнопка), тулбары, списки, меню;</li>
+        <li><strong>Grid</strong> — матрицы: сетка статистики, календари,
+            галереи, сложные карточки с фото и метаданными.</li>
+      </ul>
+      <pre><code><span class="tok-sel">.report</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-rows</span>: <span class="tok-val">auto 1fr</span>;
+}
+
+<span class="tok-com">/* шапка: одномерный ряд → flexbox */</span>
+<span class="tok-sel">.report-head</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">flex</span>;
+  <span class="tok-prop">justify-content</span>: <span class="tok-val">space-between</span>;  <span class="tok-com">/* урок 4 */</span>
+  <span class="tok-prop">align-items</span>: <span class="tok-val">center</span>;
+}
+
+<span class="tok-com">/* тело: матрица из 3 ячеек → grid */</span>
+<span class="tok-sel">.report-body</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;
+}</code></pre>
+      <div class="mix-demo">
+        <div class="mix-head">
+          <span>Отчёт за неделю</span>
+          <span class="mix-btn">Экспорт</span>
+        </div>
+        <div class="mix-body">
+          <div>128 400 ₽<small>выручка</small></div>
+          <div>312<small>заказы</small></div>
+          <div>4.7★<small>рейтинг</small></div>
+        </div>
+      </div>
+      <div class="note">
+        ⚠️ Вложенная сетка (урок 1 выше) — это «Grid внутри Grid».
+        А здесь шапка и тело — <em>соседи</em> внутри одной карточки:
+        flexbox отвечает за ряд, Grid — за матрицу. Оба подхода
+        встречаются в реальных макетах.
+      </div>
+    </section>
+
+    <!-- ============ 3. Раздувание ячеек ============ -->
+    <section>
+      <h2><span class="num">3</span>Раздувание ячеек и min-width: 0</h2>
+      <p>
+        Самая частая «поломка» вложенных сеток: у grid-элемента есть
+        <strong>автоматический минимальный размер</strong>
+        (<code>min-content</code>) — треку <code>1fr</code> нельзя стать
+        уже, чем минимальное содержимое. Если внутри лежит длинная
+        <em>непереносимая</em> строка (URL, API-токен, монокод),
+        она «раздувает» трек, и вся сетка вылезает за контейнер:
+      </p>
+      <pre><code><span class="tok-sel">.list</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">1fr 1fr</span>;
+}
+
+<span class="tok-com">/* БЕЗ фикса: длинный токен шире контейнера → сетка вылезает */</span>
+
+<span class="tok-com">/* ФИКС: разрешить элементу сжиматься */</span>
+<span class="tok-sel">.list &gt; .item</span> {
+  <span class="tok-prop">min-width</span>: <span class="tok-val">0</span>;         <span class="tok-com">/* снять автоматический min-size */</span>
+  <span class="tok-prop">overflow</span>: <span class="tok-val">hidden</span>;    <span class="tok-com">/* или одна эта строка тоже сработает */</span>
+}</code></pre>
+      <div class="blow-wrap">
+        <div class="blow-label">без min-width: 0 — строка шире пунктирного контейнера</div>
+        <div class="blow-grid">
+          <div class="long">очень-длинная-непереносимая-демо-строка-0123456789-abcdefg</div>
+          <div>обычная карточка</div>
+        </div>
+      </div>
+      <div class="blow-wrap">
+        <div class="blow-label">с min-width: 0 + overflow: hidden — сетка влезает</div>
+        <div class="blow-grid">
+          <div class="long fixed">очень-длинная-непереносимая-демо-строка-0123456789-abcdefg</div>
+          <div>обычная карточка</div>
+        </div>
+      </div>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Как чинить раздувание:</strong></p>
+        <ul>
+          <li><code>min-width: 0</code> на <em>grid-элементе</em> — снимает
+              автоматический минимальный размер;</li>
+          <li><code>overflow: hidden</code> (или <code>auto</code>) —
+              автоматически делает min-size равным 0, плюс обрезает
+              вылезшее;</li>
+          <li>если текст должен быть <em>виден целиком</em> — дайте ему
+              переноситься: <code>overflow-wrap: anywhere</code>;</li>
+          <li>тот же эффект есть и у flex-элементов
+              (<code>min-width: auto</code> по умолчанию) — фикс одинаковый.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 4. Практика ============ -->
+    <section>
+      <h2><span class="num">4</span>Практика: карточки с внутренними сетками</h2>
+      <p>
+        Собираем карточку профиля из всего, что прошли: внешняя сетка
+        раскладывает карточки (урок 1), внутренняя —
+        <code>grid-template-areas</code> (урок 2), а тег-чипы —
+        ещё одна вложенная сетка:
+      </p>
+      <pre><code><span class="tok-sel">.profiles</span> { <span class="tok-prop">display</span>: <span class="tok-val">grid</span>; <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">1fr 1fr</span>; }
+
+<span class="tok-sel">.profile</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">88px 1fr</span>;
+  <span class="tok-prop">grid-template-areas</span>:
+    <span class="tok-val">"photo title"</span>
+    <span class="tok-val">"photo meta"</span>
+    <span class="tok-val">"tags  tags"</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">12px</span>;
+}
+
+<span class="tok-com">/* и третья сетка — внутри карточки */</span>
+<span class="tok-sel">.profile .tags</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;
+}</code></pre>
+      <div class="profiles">
+        <div class="profile">
+          <div class="photo">АК</div>
+          <div class="title">Анна Ковалёва</div>
+          <div class="meta">Frontend-разработчик · 3 года</div>
+          <div class="tags"><span>HTML</span><span>CSS</span><span>Grid</span></div>
+        </div>
+        <div class="profile">
+          <div class="photo">ДМ</div>
+          <div class="title">Дмитрий Мороз</div>
+          <div class="meta">UI/UX-дизайнер · 5 лет</div>
+          <div class="tags"><span>Figma</span><span>Макеты</span><span>Прототипы</span></div>
+        </div>
+      </div>
+      <div class="note">
+        ✅ Заметьте: три уровня сеток работают независимо —
+        внешняя знает только о <em>двух</em> карточках, внутренняя —
+        об областях, а сетка тегов вообще не видна «снаружи».
+        Это и есть сила вложенности: <strong>каждый уровень решает
+        свою задачу</strong>.
+      </div>
+    </section>
+
+    <!-- ============ 5. Плейграунд ============ -->
+    <section>
+      <h2><span class="num">5</span>Попробуйте: конструктор вложенных макетов</h2>
+      <p>
+        Три карточки. Меняйте внешний контейнер (grid / flex) и
+        внутреннюю раскладку карточки (grid / flex), затем включите
+        <strong>длинное содержимое</strong> — и увидите, как оно
+        «раздувает» сетку. Вылечите это переключателем
+        <code>min-width: 0</code>:
+      </p>
+      <div class="playground">
+        <div class="controls">
+          <span class="control-label">внешний контейнер:</span>
+          <button data-group="outer" data-value="grid" class="active">grid</button>
+          <button data-group="outer" data-value="flex">flex</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">внутри карточки:</span>
+          <button data-group="inner" data-value="grid" class="active">grid</button>
+          <button data-group="inner" data-value="flex">flex</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">длинное содержимое:</span>
+          <button data-group="long" data-value="off" class="active">off</button>
+          <button data-group="long" data-value="on">on</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">min-width: 0 + overflow: hidden:</span>
+          <button data-group="minw" data-value="off" class="active">off</button>
+          <button data-group="minw" data-value="on">on</button>
+        </div>
+        <div class="current-value" id="nest-value"></div>
+        <div class="nest-demo" id="nest-demo">
+          <div class="ncard">
+            <div class="ncard-h">Карточка 1</div>
+            <div class="ncard-b">
+              <span>Шапка</span><span>Тело</span><span>Подвал</span>
+              <span class="longtxt">очень-длинная-непереносимая-демо-строка-0123456789-abcdefg</span>
+            </div>
+          </div>
+          <div class="ncard">
+            <div class="ncard-h">Карточка 2</div>
+            <div class="ncard-b">
+              <span>Шапка</span><span>Тело</span><span>Подвал</span>
+              <span class="longtxt">очень-длинная-непереносимая-демо-строка-0123456789-abcdefg</span>
+            </div>
+          </div>
+          <div class="ncard">
+            <div class="ncard-h">Карточка 3</div>
+            <div class="ncard-b">
+              <span>Шапка</span><span>Тело</span><span>Подвал</span>
+              <span class="longtxt">очень-длинная-непереносимая-демо-строка-0123456789-abcdefg</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        💡 Включите <strong>длинное содержимое + min-width: 0 = off</strong>
+        и посмотрите, как карточки вылезают за рамки. Затем переключите
+        <code>min-width: 0</code> на on — сетка вернётся в контейнер.
+        Попробуйте то же самое при внешнем flex: <em>тот же симптом,
+        тот же фикс</em>.
+      </div>
+    </section>
+
+    <!-- ============ 6. Итоги ============ -->
+    <section>
+      <h2><span class="num">6</span>Итоги урока</h2>
+      <div class="card" style="padding:0;">
+        <table>
+          <thead>
+            <tr><th>Задача</th><th>Инструмент</th><th>Замечание</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Grid внутри grid</td>
+              <td><code>display: grid</code> на grid-элементе</td>
+              <td>Вложенная сетка изолирована от родительской</td>
+            </tr>
+            <tr>
+              <td>Одномерный ряд (шапка, тулбар)</td>
+              <td><code>display: flex</code></td>
+              <td>Один ряд, <code>justify-content</code> / <code>gap</code></td>
+            </tr>
+            <tr>
+              <td>Двумерная матрица</td>
+              <td><code>display: grid</code></td>
+              <td>Строки и колонки одновременно</td>
+            </tr>
+            <tr>
+              <td>Карточка «фото + данные + теги»</td>
+              <td><code>grid-template-areas</code> + вложенная сетка</td>
+              <td>Каждый уровень решает свою задачу (урок 2)</td>
+            </tr>
+            <tr>
+              <td>Длинная строка вылезает из ячейки</td>
+              <td><code>min-width: 0</code> / <code>overflow: hidden</code></td>
+              <td>Снимает автоматический min-size элемента</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        ✅ <strong>Правило практики:</strong> макет строится «снаружи
+        внутрь» — сначала каркас страницы (урок 2), потом карточки
+        (этот урок), потом внутренности карточек. А в финальном
+        <strong>уроке 7</strong> научим этот каркас адаптироваться
+        к любому экрану: <code>minmax()</code>, <code>auto-fit</code>,
+        <code>auto-fill</code>.
+      </div>
+    </section>
+
+    <footer>
+      Урок 6 из серии «Изучаем CSS Grid» ·
+      <a href="index.html" style="color:var(--accent);">← К оглавлению</a> ·
+      <a href="05-auto-flow-order.html" style="color:var(--accent);">← Урок 5</a>
+    </footer>
+  </div>
+
+  <script>
+    const demo = document.getElementById('nest-demo');
+    const valueLabel = document.getElementById('nest-value');
+    valueLabel.style.whiteSpace = 'pre';
+
+    const cards = Array.from(demo.children);
+    const state = { outer: 'grid', inner: 'grid', long: 'off', minw: 'off' };
+
+    function apply() {
+      demo.classList.toggle('is-flex', state.outer === 'flex');
+      demo.classList.toggle('minw0', state.minw === 'on');
+      cards.forEach(c => {
+        c.classList.toggle('is-flex', state.inner === 'flex');
+        c.querySelector('.ncard-b').classList.toggle('has-long', state.long === 'on');
+      });
+
+      let css = '';
+      if (state.outer === 'grid') {
+        css += '.outer { display: grid; grid-template-columns: repeat(3, 1fr); }';
+      } else {
+        css += '.outer { display: flex; }\n.card { flex: 1; }';
+      }
+      css += '\n' + (state.inner === 'grid'
+        ? '.card { display: grid; }'
+        : '.card { display: flex; flex-direction: column; }');
+      if (state.minw === 'on') {
+        css += '\n.card { min-width: 0; overflow: hidden; }';
+      }
+      valueLabel.textContent = css;
+    }
+
+    document.querySelectorAll('.playground button[data-group]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        document.querySelectorAll('.playground button[data-group="' + group + '"]')
+          .forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state[group] = btn.dataset.value;
+        apply();
+      });
+    });
+
+    apply();
+  </script>
+</body>
+</html>
