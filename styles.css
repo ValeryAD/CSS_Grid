@@ -1102,6 +1102,235 @@ td code { white-space: nowrap; }
 
 .nest-demo.minw0 .ncard { min-width: 0; overflow: hidden; }
 
+/* ---------- Урок 7: Гибкость и адаптивный макет ---------- */
+
+/* Сплющенные фиксированные колонки */
+.crush-demo {
+  width: 300px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  border: 1px dashed var(--muted);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--surface);
+  margin-bottom: 1rem;
+}
+
+.crush-demo > div {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 6px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.crush-demo .crushed { font-size: 0.75rem; }
+
+/* Сравнение minmax() */
+.minmax-compare {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.minmax-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.minmax-box {
+  width: 320px;
+  max-width: 100%;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(70px, 1fr));
+  gap: 8px;
+  border: 1px dashed var(--muted);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--surface);
+}
+
+.minmax-box.wide { grid-template-columns: repeat(3, minmax(110px, 1fr)); }
+
+.minmax-box > div {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 6px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* auto-fit vs auto-fill */
+.af-compare {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.af-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+}
+
+.af-box {
+  width: 400px;
+  max-width: 100%;
+  display: grid;
+  gap: 10px;
+  border: 1px dashed var(--muted);
+  border-radius: 8px;
+  padding: 10px;
+  background: var(--surface);
+}
+
+.af-box.fit  { grid-template-columns: repeat(auto-fit, minmax(80px, 1fr)); }
+.af-box.fill { grid-template-columns: repeat(auto-fill, minmax(80px, 1fr)); }
+
+.af-box > div {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 6px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Флюидные значения (clamp/min/max) */
+.fluid-demo {
+  container-type: inline-size;
+  resize: horizontal;
+  overflow: hidden;
+  min-width: 200px;
+  max-width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--surface-2);
+  border-radius: var(--radius);
+  padding: 1rem 1.25rem 2.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.fluid-demo h3 {
+  font-size: clamp(1rem, 9cqi, 2.4rem);
+  margin-bottom: 0.75rem;
+  overflow-wrap: anywhere;
+}
+
+.fluid-demo .fluid-card {
+  width: min(90%, 380px);
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Responsive-макет (сборка) */
+.layout-demo {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: minmax(150px, 240px) 1fr;
+  grid-template-areas:
+    "top   top"
+    "side  main"
+    "cards cards";
+  border: 1px dashed var(--muted);
+  border-radius: var(--radius);
+  padding: 12px;
+  background: var(--bg);
+  margin-bottom: 1.5rem;
+}
+
+.layout-demo > div {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 8px;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  padding: 0.4rem 0.9rem;
+  font-weight: 600;
+}
+
+.layout-demo small { color: var(--muted); font-weight: 400; margin-left: 0.35rem; }
+
+.ld-top  { grid-area: top; }
+.ld-side { grid-area: side; }
+.ld-main { grid-area: main; }
+
+.ld-cards {
+  grid-area: cards;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(90px, 1fr));
+  gap: 8px;
+  min-height: 0;
+  border-style: dashed;
+}
+
+.ld-cards span {
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid var(--green);
+  color: var(--green);
+  border-radius: 6px;
+  min-height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+/* Плейграунд: живой ресайз */
+.resize-demo {
+  display: grid;
+  gap: 10px;
+  resize: horizontal;
+  overflow: hidden;
+  min-width: 220px;
+  max-width: 100%;
+  background: var(--surface-2);
+  border: 1px dashed var(--muted);
+  border-radius: 8px;
+  padding: 10px;
+}
+
+.resize-demo .r-card {
+  background: var(--accent-soft);
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  border-radius: 8px;
+  min-height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.pg-hint {
+  margin: 0.75rem 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
 /* ---------- Подвал ---------- */
 footer {
   margin-top: 3rem;

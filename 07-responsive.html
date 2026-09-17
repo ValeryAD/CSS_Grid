@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Урок 7: Гибкость и адаптивный макет</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a href="index.html">← К оглавлению</a>
+      <a href="04-alignment.html">← Урок 4</a>
+      <a href="05-auto-flow-order.html">← Урок 5</a>
+      <a href="06-nesting.html">← Урок 6</a>
+    </nav>
+
+    <header>
+      <h1>Гибкость и адаптивный макет</h1>
+      <p>Урок 7 (финальный): почему фиксированные колонки ломаются на узких экранах, <code>minmax()</code> как двигатель адаптивности, <code>auto-fit</code> vs <code>auto-fill</code>, <code>clamp()</code>/<code>min()</code>/<code>max()</code>, сборка responsive-макета и живое демо ресайза</p>
+    </header>
+
+    <!-- ============ 1. Фиксированная сетка ============ -->
+    <section>
+      <h2><span class="num">1</span>Фиксированная сетка перестаёт работать</h2>
+      <p>
+        Все наши демо — от «3 колонки» (урок 1) до карточек (урок 6) —
+        использовали <strong>константы</strong>: <code>1fr 1fr 1fr</code>,
+        <code>88px 1fr</code>, <code>repeat(3, 1fr)</code>. Это отлично
+        работает, пока экран достаточно широк. Но на узком контейнере
+        три «ровные» колонки превращаются в три сплющенные щели:
+      </p>
+      <pre><code><span class="tok-sel">.cards</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, 1fr)</span>;  <span class="tok-com">/* всегда ровно 3 колонки */</span>
+}</code></pre>
+      <div class="crush-demo">
+        <div>Каталог</div><div>Каталог</div><div>Каталог</div>
+        <div class="crushed">Длинный текст</div><div class="crushed">Длинный текст</div><div class="crushed">Длинный текст</div>
+      </div>
+      <div class="note">
+        ⚠️ Точки роста сетки — две вещи, которые мы до сих пор
+        держали фиксированными: <strong>ширина трека</strong> и
+        <strong>количество треков</strong>. В этом уроке снимаем оба
+        ограничения — и получаем адаптивный макет без единой
+        медиазаписи.
+      </div>
+    </section>
+
+    <!-- ============ 2. minmax() ============ -->
+    <section>
+      <h2><span class="num">2</span>minmax() — двигатель гибкости</h2>
+      <p>
+        Функция <code>minmax(min, max)</code> задаёт треку
+        <strong>разрешённый диапазон</strong> ширины: «не уже <em>min</em>,
+        не шире <em>max</em>». В сочетании с <code>1fr</code> она означает:
+        <em>раздай лишнее пространство по-честному, но ни за что не сжимай
+        трек ниже моего минимума</em>:
+      </p>
+      <pre><code><span class="tok-sel">.cards</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(3, minmax(140px, 1fr))</span>;
+  <span class="tok-com">/* каждая колонка: от 140px до «сколько влезет, по-честно» */</span>
+  <span class="tok-com">/* если влезает только 1 такая колонка — остальные треки уйдут вниз (урок 5) */</span>
+}</code></pre>
+      <p>
+        Оба контейнера ниже одинаковой ширины. Слева минимум <em>110px</em>
+        — три таких трека не помещаются, и сетка вылезает за рамку
+        (а при <code>auto-flow</code> — «упадёт» во второй ряд).
+        Справа минимум <em>70px</em> — три колонки вписываются:
+      </p>
+      <div class="minmax-compare">
+        <div>
+          <div class="minmax-label">minmax(110px, 1fr) — 3 × 110px не влезает → сетка шире рамки</div>
+          <div class="minmax-box wide">
+            <div>1</div><div>2</div><div>3</div>
+            <div>4</div><div>5</div><div>6</div>
+          </div>
+        </div>
+        <div>
+          <div class="minmax-label">minmax(70px, 1fr) — 3 × 70px влезает → ровные 3 колонки</div>
+          <div class="minmax-box">
+            <div>1</div><div>2</div><div>3</div>
+            <div>4</div><div>5</div><div>6</div>
+          </div>
+        </div>
+      </div>
+      <div class="note">
+        💡 <code>minmax()</code> — это «гибкость с гарантией»:
+        трек <strong>растягивается</strong>, когда есть место,
+        и <strong>защищается</strong>, когда места мало. Именно она
+        делает <code>repeat(auto-fit, …)</code> таким популярным.
+      </div>
+    </section>
+
+    <!-- ============ 3. auto-fit vs auto-fill ============ -->
+    <section>
+      <h2><span class="num">3</span>auto-fit и auto-fill: сколько треков создавать</h2>
+      <p>
+        Пока что <code>repeat()</code> всегда получал фиксированное число:
+        <code>repeat(3, …)</code>. Grid умеет и другое —
+        <code>repeat(auto-fit, …)</code> и <code>repeat(auto-fill, …)</code>:
+        «создай <em>столько треков, сколько влезает</em> при заданном
+        минимуме». Разница между ними видна только когда
+        <strong>элементов меньше, чем треков</strong>:
+      </p>
+      <pre><code><span class="tok-com">/* auto-fit — пустые треки схлопываются в 0 */</span>
+<span class="tok-sel">.fit</span>  { <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(auto-fit, minmax(80px, 1fr))</span>; }
+
+<span class="tok-com">/* auto-fill — пустые треки остаются, просто пустыми */</span>
+<span class="tok-sel">.fill</span> { <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(auto-fill, minmax(80px, 1fr))</span>; }</code></pre>
+      <p>
+        В контейнер влезает <strong>4</strong> трека по 80px, а элементов
+        всего <strong>два</strong>. <code>auto-fit</code> схлопывает два
+        пустых трека — карточки занимают всю ширину. <code>auto-fill</code>
+        держит все 4 трека — и вы видите два пустых «слота»:
+      </p>
+      <div class="af-compare">
+        <div>
+          <div class="af-label">auto-fit — 2 элемента растягиваются на всю ширину</div>
+          <div class="af-box fit"><div>1</div><div>2</div></div>
+        </div>
+        <div>
+          <div class="af-label">auto-fill — 4 трека, 2 из них пустые</div>
+          <div class="af-box fill"><div>1</div><div>2</div></div>
+        </div>
+      </div>
+      <div class="card">
+        <p style="margin-bottom:0.75rem;"><strong>Когда что:</strong></p>
+        <ul>
+          <li><strong><code>auto-fit</code></strong> — почти всегда:
+              галереи, карточки, плитки. Меньше элементов → они
+              становятся шире, макет «дышит»;</li>
+          <li><strong><code>auto-fill</code></strong> — когда важна
+              <em>геометрия</em>: календари, плитки-иконки, слоты
+              «под будущие элементы». Пустые ячейки должны оставаться
+              видимыми;</li>
+          <li>при <strong>переполнении</strong> (элементов больше,
+              чем треков) оба работают одинаково: лишние уходят
+              в новые строки (урок 5).</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ============ 4. clamp / min / max ============ -->
+    <section>
+      <h2><span class="num">4</span>clamp(), min(), max() — плавные значения</h2>
+      <p>
+        <code>minmax()</code> работает с <em>треками</em>, но та же идея —
+        «значение с ограничителями» — существует и для любых CSS-значений:
+      </p>
+      <pre><code><span class="tok-com">/* clamp(минимум, «желаемое», максимум) */</span>
+<span class="tok-sel">h1</span> { <span class="tok-prop">font-size</span>: <span class="tok-val">clamp(1rem, 4vw, 2.5rem)</span>;
+       <span class="tok-com">/*  не меньше 1rem, не больше 2.5rem,
+          а между — 4% ширины окна: текст «течёт» плавно  */</span>
+}
+
+<span class="tok-com">/* min() и max() — те же ограничители по одному краю */</span>
+<span class="tok-sel">.sidebar</span> { <span class="tok-prop">width</span>: <span class="tok-val">min(30vw, 320px)</span>;  <span class="tok-com">/* 30% окна, но не шире 320px */</span> }
+<span class="tok-sel">.badge</span>   { <span class="tok-prop">width</span>: <span class="tok-val">max(80px, 12cqi)</span>;  <span class="tok-com">/* 12% контейнера, но не уже 80px */</span> }</code></pre>
+      <p>
+        Тяните <strong>правый нижний угол</strong> контейнера ниже —
+        заголовок плавно растёт и упирается в максимум, а карточка
+        тянется за контейнером, но останавливается на 380px:
+      </p>
+      <div class="fluid-demo">
+        <h3>Плавный заголовок: clamp(1rem, 9cqi, 2.4rem)</h3>
+        <div class="fluid-card">Карточка: width: min(90%, 380px)</div>
+      </div>
+      <div class="note">
+        💡 <code>cqi</code> — 1% ширины контейнера (container queries,
+        включённые свойством <code>container-type</code>). Можно заменить
+        на <code>vw</code> (1% ширины окна) — принцип тот же:
+        <strong>значение растёт вместе со средой, но держится в коридоре</strong>.
+        <code>clamp()</code> — главный инструмент «флюидной типографики»:
+        без него адаптивность упирается в резкие ступеньки медиазаписей.
+      </div>
+    </section>
+
+    <!-- ============ 5. Сборка макета ============ -->
+    <section>
+      <h2><span class="num">5</span>Сборка responsive-макета</h2>
+      <p>
+        Собираем «страницу» целиком — и не пишем ни одной
+        <code>@media</code>. Каркас — сетка с <code>minmax()</code> на
+        сайдбаре (урок 2, области), а карточки внутри —
+        <code>auto-fit</code>:
+      </p>
+      <pre><code><span class="tok-sel">.page</span> {
+  <span class="tok-prop">display</span>: <span class="tok-val">grid</span>;
+  <span class="tok-prop">gap</span>: <span class="tok-val">10px</span>;
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">minmax(150px, 240px) 1fr</span>;
+  <span class="tok-com">/* сайдбар: от 150 до 240px — шире уже не растёт */</span>
+  <span class="tok-prop">grid-template-areas</span>:
+    <span class="tok-val">"top   top"</span>
+    <span class="tok-val">"side  main"</span>
+    <span class="tok-val">"cards cards"</span>;
+}
+
+<span class="tok-sel">.page .cards</span> {
+  <span class="tok-prop">grid-template-columns</span>: <span class="tok-val">repeat(auto-fit, minmax(90px, 1fr))</span>;
+  <span class="tok-com">/* сколько карточек влезает — столько и колонок */</span>
+}</code></pre>
+      <div class="layout-demo">
+        <div class="ld-top">Шапка</div>
+        <div class="ld-side">Сайдбар<br><small>minmax(150px, 240px)</small></div>
+        <div class="ld-main">Основной блок<br><small>1fr — забирает остаток</small></div>
+        <div class="ld-cards">
+          <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
+        </div>
+      </div>
+      <div class="note">
+        ✅ Обратите внимание на разделение ответственности:
+        <code>minmax()</code> на треках каркаса задаёт
+        <strong>диапазон</strong> сайдбара, а
+        <code>repeat(auto-fit, minmax(…))</code> в карточках решает
+        <strong>сколько</strong> их поместится. Три свойства —
+        и макет адаптируется от телефона до широкоэкранного монитора.
+      </div>
+    </section>
+
+    <!-- ============ 6. Плейграунд ============ -->
+    <section>
+      <h2><span class="num">6</span>Попробуйте: живое демо ресайза</h2>
+      <p>
+        У вас в руках самый популярный «адаптивный приём» в мире:
+        <code>repeat(auto-fit, minmax(…))</code>. Меняйте режим,
+        минимальную ширину и количество карточек — а затем
+        <strong>тяните правый нижний угол</strong> пунктирного контейнера,
+        чтобы сетка перестраивалась у вас на глазах:
+      </p>
+      <div class="playground">
+        <div class="controls">
+          <span class="control-label">режим:</span>
+          <button data-group="mode" data-value="fit" class="active">auto-fit</button>
+          <button data-group="mode" data-value="fill">auto-fill</button>
+          <button data-group="mode" data-value="fixed">repeat(3, 1fr)</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">min в minmax():</span>
+          <button data-group="min" data-value="80">80px</button>
+          <button data-group="min" data-value="140" class="active">140px</button>
+          <button data-group="min" data-value="220">220px</button>
+        </div>
+        <div class="controls">
+          <span class="control-label">карточек:</span>
+          <button data-group="count" data-value="3">3</button>
+          <button data-group="count" data-value="6" class="active">6</button>
+          <button data-group="count" data-value="9">9</button>
+        </div>
+        <div class="current-value" id="resp-value"></div>
+        <div class="resize-demo" id="resp-demo"></div>
+        <p class="pg-hint">↘ тяните правый нижний угол контейнера — колонки перестраиваются вживую</p>
+      </div>
+      <div class="note">
+        💡 Сравните три сценария: <strong>3 карточки + auto-fit +
+        широкий контейнер</strong> — карточки тянутся на всю ширину;
+        <strong>те же 3 + auto-fill</strong> — видны пустые слоты;
+        <strong>repeat(3, 1fr)</strong> — всегда ровно 3, даже когда
+        это бессмысленно. И поменяйте <code>min</code> на 220px —
+        увидим, как минимум «диктует» количество колонки.
+      </div>
+    </section>
+
+    <!-- ============ 7. Итоги ============ -->
+    <section>
+      <h2><span class="num">7</span>Итоги урока</h2>
+      <div class="card" style="padding:0;">
+        <table>
+          <thead>
+            <tr><th>Задача</th><th>Инструмент</th><th>Замечание</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Колонка гибкая, но с «полом»</td>
+              <td><code>minmax(min, max)</code></td>
+              <td>Растягивается, но не сжимается ниже min</td>
+            </tr>
+            <tr>
+              <td>Число колонок адаптируется к ширине</td>
+              <td><code>repeat(auto-fit, minmax(…))</code></td>
+              <td>Универсальный адаптивный приём</td>
+            </tr>
+            <tr>
+              <td>Держать пустые слоты видимыми</td>
+              <td><code>repeat(auto-fill, minmax(…))</code></td>
+              <td>Календари, плитки, «резерв» под элементы</td>
+            </tr>
+            <tr>
+              <td>Значение растёт плавно, в коридоре</td>
+              <td><code>clamp(min, val, max)</code></td>
+              <td>Флюидная типографика без ступенек</td>
+            </tr>
+            <tr>
+              <td>Ограничение с одной стороны</td>
+              <td><code>min()</code> / <code>max()</code></td>
+              <td>Например, <code>width: min(30vw, 320px)</code></td>
+            </tr>
+            <tr>
+              <td>Адаптивный каркас страницы</td>
+              <td><code>minmax()</code> на треках + <code>auto-fit</code> на карточках</td>
+              <td>Без единой <code>@media</code> (урок 2, области)</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="note">
+        🎓 <strong>Поздравляем — курс пройден!</strong> За 7 уроков вы
+        прошли путь от «<code>display: grid</code>» (урок 1) до
+        полностью адаптивных макетов (этот урок): строки, области,
+        линии, выравнивание, авто-размещение, вложенность и гибкость.
+        Формула, закрывающая курс: <strong>каркас —
+        <code>grid-template</code> с <code>minmax()</code>,
+        наполнение — <code>repeat(auto-fit, minmax(…))</code></strong>.
+        Этого достаточно для 90% реальных интерфейсов.
+      </div>
+    </section>
+
+    <footer>
+      Финальный урок из серии «Изучаем CSS Grid» ·
+      <a href="index.html" style="color:var(--accent);">← К оглавлению</a> ·
+      <a href="06-nesting.html" style="color:var(--accent);">← Урок 6</a>
+    </footer>
+  </div>
+
+  <script>
+    const demo = document.getElementById('resp-demo');
+    const valueLabel = document.getElementById('resp-value');
+    valueLabel.style.whiteSpace = 'pre';
+
+    const state = { mode: 'fit', min: '140', count: '6' };
+
+    function render() {
+      demo.innerHTML = '';
+      const n = parseInt(state.count, 10);
+      for (let i = 1; i <= n; i++) {
+        const d = document.createElement('div');
+        d.className = 'r-card';
+        d.textContent = i;
+        demo.appendChild(d);
+      }
+
+      let cols;
+      if (state.mode === 'fixed') {
+        cols = 'repeat(3, 1fr)';
+      } else if (state.mode === 'fill') {
+        cols = 'repeat(auto-fill, minmax(' + state.min + 'px, 1fr))';
+      } else {
+        cols = 'repeat(auto-fit, minmax(' + state.min + 'px, 1fr))';
+      }
+      demo.style.gridTemplateColumns = cols;
+
+      valueLabel.textContent =
+        '.cards {\n' +
+        '  display: grid;\n' +
+        '  gap: 10px;\n' +
+        '  grid-template-columns: ' + cols + ';\n' +
+        '}';
+    }
+
+    document.querySelectorAll('.playground button[data-group]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const group = btn.dataset.group;
+        document.querySelectorAll('.playground button[data-group="' + group + '"]')
+          .forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        state[group] = btn.dataset.value;
+        render();
+      });
+    });
+
+    render();
+  </script>
+</body>
+</html>
