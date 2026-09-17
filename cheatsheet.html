@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Шпаргалка: CSS Grid по курсу</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page">
+    <nav class="nav">
+      <a href="index.html">← К оглавлению</a>
+    </nav>
+
+    <header>
+      <h1>Шпаргалка по CSS Grid</h1>
+      <p>Все grid-свойства и функции, которые прошли за 7 уроков курса «Изучаем CSS Grid». Удерживайте под рукой, когда пишите макеты руками.</p>
+    </header>
+
+    <table>
+      <thead>
+        <tr><th>Свойство / функция</th><th>Описание</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>display: grid</code></td><td>Включает grid-контейнер <em>(урок 1)</em></td></tr>
+        <tr><td><code>grid-template-columns</code></td><td>Определяет колонки <em>(урок 1)</em></td></tr>
+        <tr><td><code>grid-template-rows</code></td><td>Определяет строки <em>(урок 2)</em></td></tr>
+        <tr><td><code>grid-template</code></td><td>Сокращение: строки + колонки одной строкой <em>(урок 2)</em></td></tr>
+        <tr><td><code>grid-template-areas</code></td><td>Именованные области — макет без номеров линий <em>(урок 2)</em></td></tr>
+        <tr><td><code>grid-area</code></td><td>Назначает элемент именованной области <em>(урок 2)</em></td></tr>
+        <tr><td><code>grid-column</code> / <code>grid-row</code></td><td>Явная позиция по линиям, <code>span</code> <em>(урок 3)</em></td></tr>
+        <tr><td><code>gap</code> <small>(<code>column-gap</code>, <code>row-gap</code>)</small></td><td>Отступы между треками</td></tr>
+        <tr><td><code>justify-items</code> / <code>align-items</code></td><td>Выравнивание элементов в ячейках <em>(урок 4)</em></td></tr>
+        <tr><td><code>justify-self</code> / <code>align-self</code></td><td>Выравнивание одного элемента-«бунтаря» <em>(урок 4)</em></td></tr>
+        <tr><td><code>justify-content</code> / <code>align-content</code></td><td>Выравнивание всей сетки треков в контейнере <em>(урок 4)</em></td></tr>
+        <tr><td><code>place-items</code> / <code>place-self</code> / <code>place-content</code></td><td>Сокращения: align + justify в одном <em>(урок 4)</em></td></tr>
+        <tr><td><code>margin: auto</code></td><td>Авто-отступы: центрирует элемент в ячейке <em>(урок 4)</em></td></tr>
+        <tr><td><code>grid-auto-rows</code> / <code>grid-auto-columns</code></td><td>Размер неявных треков <em>(урок 5)</em></td></tr>
+        <tr><td><code>grid-auto-flow</code></td><td>Направление авто-размещения: <code>row</code> / <code>column</code> + <code>dense</code> <em>(урок 5)</em></td></tr>
+        <tr><td><code>order</code></td><td>Перестановка элементов без изменения HTML <em>(урок 5)</em></td></tr>
+        <tr><td><code>repeat()</code></td><td>Повтор трека: <code>repeat(3, 1fr)</code>, <code>repeat(auto-fit, …)</code> <em>(уроки 1, 7)</em></td></tr>
+        <tr><td><code>fr</code></td><td>Доля свободного места <em>(урок 1)</em></td></tr>
+        <tr><td><code>minmax(min, max)</code></td><td>Трек с диапазоном: «гибкость с полом» <em>(урок 7)</em></td></tr>
+        <tr><td><code>auto-fit</code></td><td>Создать влезает сколько треков, пустые схлопнуть <em>(урок 7)</em></td></tr>
+        <tr><td><code>auto-fill</code></td><td>То же, но пустые треки сохранить <em>(урок 7)</em></td></tr>
+        <tr><td><code>clamp(min, val, max)</code></td><td>Значение в коридоре — флюидная типографика <em>(урок 7)</em></td></tr>
+        <tr><td><code>min()</code> / <code>max()</code></td><td>Ограничение значения с одной стороны <em>(урок 7)</em></td></tr>
+        <tr><td><code>min-width: 0</code> (+ <code>overflow: hidden</code>)</td><td>Лечит «раздувание» ячеек длинными строками <em>(урок 6)</em></td></tr>
+      </tbody>
+    </table>
+
+    <div class="note">
+      🎓 <strong>Главная формула курса:</strong> каркас страницы —
+      <code>grid-template</code> с <code>minmax()</code>, наполнение —
+      <code>repeat(auto-fit, minmax(…))</code> — и макет адаптивен
+      без единой <code>@media</code>.
+    </div>
+
+    <footer>
+      Шпаргалка к курсу «Изучаем CSS Grid» ·
+      <a href="index.html" style="color:var(--accent);">← К оглавлению</a>
+    </footer>
+  </div>
+</body>
+</html>
