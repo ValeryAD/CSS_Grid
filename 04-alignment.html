@@ -170,15 +170,22 @@
   <span class="tok-prop">gap</span>: <span class="tok-val">10px</span>;
 }
 
-<span class="tok-com">/* элемент занимает 2 колонки, но сам — по центру этой области */</span>
-<span class="tok-sel">.b</span> {
+<span class="tok-com">/* элемент 2: занимает 2 колонки и прижат к правому краю области */</span>
+<span class="tok-sel">.plain</span> {
   <span class="tok-prop">grid-column</span>: <span class="tok-val">2 / 4</span>;
-  <span class="tok-prop">width</span>: <span class="tok-val">180px</span>;
+  <span class="tok-prop">justify-self</span>: <span class="tok-val">end</span>;
+}
+
+<span class="tok-com">/* элемент 4: блок с фиксированной шириной — по центру своей области */</span>
+<span class="tok-sel">.auto</span> {
+  <span class="tok-prop">grid-column</span>: <span class="tok-val">1 / 4</span>;
+  <span class="tok-prop">width</span>: <span class="tok-val">220px</span>;
   <span class="tok-prop">margin-inline</span>: <span class="tok-val">auto</span>; <span class="tok-com">/* = margin-left + margin-right: auto */</span>
 }
 
-<span class="tok-com">/* отцентрировать по обеим осям: */</span>
-<span class="tok-sel">.c</span> { <span class="tok-prop">margin</span>: <span class="tok-val">auto</span>; }</code></pre>
+<span class="tok-com">/* тот же приём, но по обеим осям сразу: */</span>
+<span class="tok-com">/* .center { margin: auto; } */</span></code></pre>
+      <p>Живой пример — ровно эта сетка: синяя плашка занимает две колонки и прижата к правому краю (<code>justify-self: end</code>), а зелёный блок шириной 220px по центру своей области «висит» благодаря <code>margin-inline: auto</code>:</p>
       <div class="margin-auto-demo">
         <div class="ctx">a</div>
         <div class="plain">justify-self: end</div>
@@ -186,10 +193,12 @@
         <div class="auto" style="grid-column: 1 / 4;">margin-inline: auto</div>
       </div>
       <div class="note">
-        ⚠️ Элемент с <code>margin: auto</code> и явным <code>grid-column</code>
-        (или только <code>margin: auto</code>) <strong>выходит из потока</strong>
-        авто-размещения — браузер больше не «ставит его по порядку».
-        Как это сочетается с <code>grid-auto-flow</code>, разберём в уроке 5.
+        ⚠️ Важно: из потока авто-размещения элемент <strong>выходит</strong>,
+        когда у него есть явное <code>grid-column</code> (или <code>grid-row</code> /
+        <code>grid-area</code>) — как у двух элементов выше. Само по себе
+        <code>margin: auto</code> размещение не влияет — оно лишь «съедает»
+        свободное место в уже выделенной области.
+        Как явное размещение сочетается с <code>grid-auto-flow</code>, разберём в уроке 5.
       </div>
       <div class="card">
         <p style="margin-bottom:0.75rem;"><strong>Когда что использовать:</strong></p>
