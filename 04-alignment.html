@@ -265,36 +265,78 @@
       <div class="card" style="padding:0;">
         <table>
           <thead>
-            <tr><th>Задача</th><th>Свойство</th><th>Кто задаёт</th></tr>
+            <tr><th>Свойство</th><th>Ось</th><th>Кому задаётся</th><th>Возможные значения</th></tr>
           </thead>
           <tbody>
-            <tr>
-              <td>Один элемент — в углу ячейки</td>
-              <td><code>justify-self</code> + <code>align-self</code></td>
-              <td>Элементу</td>
+            <tr class="row-group">
+              <th colspan="4">1. Выравнивание всей сетки в контейнере (двигаются трексы целиком)</th>
             </tr>
             <tr>
-              <td>Все элементы — по центру ячеек</td>
-              <td><code>place-items: center</code></td>
+              <td><code>justify-content</code></td>
+              <td>горизонталь (колонки)</td>
               <td>Контейнеру</td>
+              <td><code>start</code>, <code>end</code>, <code>center</code>, <code>space-between</code>, <code>space-around</code>, <code>space-evenly</code></td>
             </tr>
             <tr>
-              <td>Вся сетка — в центр/к краю контейнера</td>
-              <td><code>place-content</code> (или justify- + align-content)</td>
+              <td><code>align-content</code></td>
+              <td>вертикаль (строки)</td>
               <td>Контейнеру</td>
+              <td><code>stretch</code>, <code>start</code>, <code>end</code>, <code>center</code>, <code>space-between</code>, <code>space-around</code>, <code>space-evenly</code></td>
             </tr>
             <tr>
-              <td>Один широкий блок по центру области</td>
-              <td><code>margin-inline: auto</code></td>
+              <td><code>place-content</code></td>
+              <td>обе оси</td>
+              <td>Контейнеру</td>
+              <td>очередность: <strong>вертикаль, затем горизонталь</strong> — <code>place-content: center space-evenly</code>; одно значение применяется к обеим осям</td>
+            </tr>
+            <tr class="row-group">
+              <th colspan="4">2. Выравнивание элементов внутри ячеек (все элементы контейнера)</th>
+            </tr>
+            <tr>
+              <td><code>justify-items</code></td>
+              <td>горизонталь</td>
+              <td>Контейнеру — влияет на все элементы</td>
+              <td><code>stretch</code> (по умолчанию), <code>start</code>, <code>end</code>, <code>center</code>, <code>baseline</code></td>
+            </tr>
+            <tr>
+              <td><code>align-items</code></td>
+              <td>вертикаль</td>
+              <td>Контейнеру — влияет на все элементы</td>
+              <td><code>stretch</code> (по умолчанию), <code>start</code>, <code>end</code>, <code>center</code>, <code>baseline</code></td>
+            </tr>
+            <tr>
+              <td><code>place-items</code></td>
+              <td>обе оси</td>
+              <td>Контейнеру</td>
+              <td>очередность: <strong>вертикаль, затем горизонталь</strong> — <code>place-items: start center</code>; одно значение применяется к обеим осям</td>
+            </tr>
+            <tr class="row-group">
+              <th colspan="4">3. Выравнивание отдельного элемента внутри ячейки (перекрывает *-items контейнера)</th>
+            </tr>
+            <tr>
+              <td><code>justify-self</code></td>
+              <td>горизонталь</td>
               <td>Элементу</td>
+              <td><code>stretch</code> (по умолчанию), <code>start</code>, <code>end</code>, <code>center</code>, <code>baseline</code></td>
             </tr>
             <tr>
-              <td>Распределить свободное место между трексами</td>
-              <td><code>space-between</code> / <code>space-around</code> / <code>space-evenly</code></td>
-              <td>Контейнеру (только при фикс. трексах)</td>
+              <td><code>align-self</code></td>
+              <td>вертикаль</td>
+              <td>Элементу</td>
+              <td><code>stretch</code> (по умолчанию), <code>start</code>, <code>end</code>, <code>center</code>, <code>baseline</code></td>
+            </tr>
+            <tr>
+              <td><code>place-self</code></td>
+              <td>обе оси</td>
+              <td>Элементу</td>
+              <td>очередность: <strong>вертикаль, затем горизонталь</strong> — <code>place-self: start center</code>; одно значение применяется к обеим осям</td>
             </tr>
           </tbody>
         </table>
+      </div>
+      <div class="note">
+        ⚠️ Значения <code>space-*</code> имеют смысл только тогда, когда трексы
+        не растягивают контейнер (фиксированные размеры, а не <code>fr</code> до краёв).
       </div>
       <div class="note">
         ✅ <strong>Правило практики:</strong> для «всего сразу» используйте

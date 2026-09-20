@@ -194,6 +194,16 @@ th {
 
 td code { white-space: nowrap; }
 
+/* Заголовки-группы внутри таблицы (разделители уровней) */
+tr.row-group th {
+  background: var(--accent-soft);
+  color: var(--text);
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
 /* ---------- Плейграунд ---------- */
 .playground {
   background: var(--surface);
