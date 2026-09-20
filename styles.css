@@ -819,14 +819,6 @@ tr.row-group th {
 
 .dense-demo .wide { grid-column: span 2; }
 
-.dense-demo .hole {
-  background: transparent;
-  border: 1px dashed var(--muted);
-  color: var(--muted);
-  font-weight: 400;
-  font-size: 0.75rem;
-}
-
 /* ---------- Урок 5: плейграунд потока ---------- */
 .flow-grid {
   display: grid;

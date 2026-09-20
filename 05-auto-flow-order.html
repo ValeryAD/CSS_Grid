@@ -149,25 +149,28 @@
   <span class="tok-prop">gap</span>: <span class="tok-val">8px</span>;
 }
 
-<span class="tok-sel">.b</span>, <span class="tok-sel">.d</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">span 2</span>; } <span class="tok-com">/* B и D — двойная ширина */</span>
+<span class="tok-sel">.b</span>, <span class="tok-sel">.c</span> { <span class="tok-prop">grid-column</span>: <span class="tok-val">span 2</span>; } <span class="tok-com">/* B и C — двойная ширина */</span>
 
-<span class="tok-com">/* C (ширина 1) в обычной раскладке — во 2-ю строку, дыра на (1,4).
-       С dense он «откатывается» назад и заполняет её: */</span>
+<span class="tok-com">/* C (ширина 2) не влезает в оставшуюся 1 колонку первой строки —
+       прыгает на 2-ю строку, дыра в колонке 4. С dense её
+       «откатывает» назад и заполняет D: */</span>
 <span class="tok-sel">.grid-dense</span> { <span class="tok-prop">grid-auto-flow</span>: <span class="tok-val">row dense</span>; }</code></pre>
       <div class="dense-demo">
         <div>A</div>
         <div class="wide">B</div>
-        <div class="hole" style="grid-column:4; grid-row:1;">дыра</div>
-        <div>C</div>
-        <div class="wide">D</div>
-        <div class="hole" style="grid-column:4; grid-row:2;">дыра</div>
-        <div>E</div><div>F</div><div>G</div><div>H</div>
+        <div class="wide">C</div>
+        <div>D</div>
+        <div>E</div>
+        <div>F</div><div>G</div><div>H</div>
       </div>
       <p>
-        С <code>grid-auto-flow: dense</code> браузер заглядывает <em>назад</em>
-        и ставит узкие элементы в первые свободные ячейки — C занял бы (1,4),
-        E — (2,4). Обратная сторона: <strong>визуальный порядок больше не
-        совпадает с порядком в HTML</strong>.
+        В обычной раскладке дыру в 4-й колонке никто не заполняет: D просто
+        «продолжает» с места курсора — на (3,2). С <code>grid-auto-flow: dense</code>
+        браузер заглядывает <em>назад</em>: при размещении D он сканирует сетку
+        от начала, находит первую свободную ячейку и ставит её туда — D занимает
+        дыру в 4-й колонке первой строки. Обратная сторона:
+        <strong>визуальный порядок больше не совпадает с порядком в HTML</strong> —
+        D четвёртый в разметке, но визуально оказывается в первой строке.
       </p>
       <div class="note">
         ⚠️ <code>dense</code> — инструмент для <em>плотных</em> раскладок
@@ -181,8 +184,8 @@
     <section>
       <h2><span class="num">5</span>Попробуйте: конструктор потока</h2>
       <p>
-        Сетка 4 колонки. B и D занимают 2 колонки — из-за этого в
-        обычной раскладке появляются «дыры». Переключайте
+        Сетка 4 колонки. B и C занимают 2 колонки — из-за этого в
+        обычной раскладке появляется «дыра». Переключайте
         <code>grid-auto-flow</code>, включайте <code>dense</code>
         и меняйте <code>order</code> у отдельных элементов:
       </p>
@@ -207,17 +210,16 @@
         <div class="flow-grid" id="flow-demo">
           <div>A</div>
           <div class="wide">B</div>
-          <div class="hl">C</div>
-          <div class="wide">D</div>
-          <div class="hl">E</div>
-          <div>F</div><div>G</div><div>H</div>
+          <div class="wide hl">C</div>
+          <div class="hl">D</div>
+          <div>E</div><div>F</div><div>G</div><div>H</div>
         </div>
       </div>
       <div class="note">
-        💡 Сравните: <code>row</code> + <code>dense off</code> (дыра справа)
-        против <code>row</code> + <code>dense on</code> (C и E заполняют дыры).
-        А <code>column</code> flow развернёт всю раскладку — элементы
-        пойдут сверху вниз.
+        💡 Сравните: <code>row</code> + <code>dense off</code> (дыра в 4-й колонке
+        первой строки) против <code>row</code> + <code>dense on</code> (D «откатывается»
+        назад и заполняет её). А <code>column</code> flow развернёт всю раскладку —
+        элементы пойдут сверху вниз.
       </div>
     </section>
 
