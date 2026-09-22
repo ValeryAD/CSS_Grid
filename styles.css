@@ -92,6 +92,11 @@ h2 .num {
   flex-shrink: 0;
 }
 
+h3 {
+  font-size: 1.15rem;
+  margin: 1.9rem 0 0.8rem;
+}
+
 p { margin-bottom: 1rem; }
 
 ul { margin: 0 0 1rem 1.4rem; color: var(--text); }
